@@ -1,35 +1,30 @@
 import { Scene } from 'phaser';
+import { GameProgress } from '../utils/GameProgress'; // <-- Importe o assistente de progresso
 
-export class Game extends Scene
-{
-    camera: Phaser.Cameras.Scene2D.Camera;
-    background: Phaser.GameObjects.Image;
-    msg_text : Phaser.GameObjects.Text;
-
-    constructor ()
-    {
-        super('Game');
+export class LevelOneScene extends Scene {
+    constructor() {
+        super('LevelOneScene');
     }
 
-    create ()
-    {
-        this.camera = this.cameras.main;
-        this.camera.setBackgroundColor(0x00ff00);
+    create() {
+        this.add.text(10, 50, 'Fase 1 - Aperte "W" para Vencer!', { color: '#fff' });
+        
+        // --- ADICIONE O CÓDIGO ABAIXO ---
+        // Cria um ouvinte para a tecla 'W'
+        if (this.input.keyboard) {
+            const winKey = this.input.keyboard.addKey('W');
 
-        this.background = this.add.image(512, 384, 'background');
-        this.background.setAlpha(0.5);
+            winKey.on('down', () => {
+                console.log('Fase 1 vencida!');
+                
+                // Desbloqueia o próximo nível (passamos o número do nível atual)
+                GameProgress.unlockNextLevel(1);
 
-        this.msg_text = this.add.text(512, 384, 'Make something fun!\nand share it with us:\nsupport@phaser.io', {
-            fontFamily: 'Arial Black', fontSize: 38, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
-            align: 'center'
-        });
-        this.msg_text.setOrigin(0.5);
-
-        this.input.once('pointerdown', () => {
-
-            this.scene.start('GameOver');
-
-        });
+                // Volta para a tela de seleção de fases
+                this.scene.start('LevelSelectScene');
+            });
+        } else {
+            console.error('Keyboard input is not available.');
+        }
     }
 }

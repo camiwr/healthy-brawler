@@ -1,13 +1,11 @@
 import { Boot } from './scenes/BootScene';
 import { GameOver } from './scenes/GameOverScene';
-import { Game as MainGame } from './scenes/LevelOneScene';
-import { MainMenu } from './scenes/MainMenuScene';
 import { AUTO, Game } from 'phaser';
 import { Preloader } from './scenes/PreloaderScene';
 import { SplashScreen } from './scenes/SplashScreen';
+import { LevelSelectScene } from './scenes/LevelSelectScene';
+import { LevelOneScene } from './scenes/LevelOneScene';
 
-//  Find out more information about the Game Config at:
-//  https://docs.phaser.io/api-documentation/typedef/types-core#gameconfig
 const config: Phaser.Types.Core.GameConfig = {
     type: AUTO,
     width: 1224,
@@ -23,10 +21,10 @@ const config: Phaser.Types.Core.GameConfig = {
     scene: [
         Boot,
         Preloader,
-        MainMenu,
-        MainGame,
+        SplashScreen,
+        LevelSelectScene,
+        LevelOneScene,
         GameOver,
-        SplashScreen
     ]
 };
 

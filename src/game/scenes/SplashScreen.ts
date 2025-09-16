@@ -48,7 +48,7 @@ export class SplashScreen extends Scene {
         startButton.setDepth(10); // Botão na frente
 
         startButton.on('pointerdown', () => {
-            this.scene.start('MainMenuScene');
+            this.scene.start('LevelSelectScene');
         });
     }
     createGradientBackground() {
