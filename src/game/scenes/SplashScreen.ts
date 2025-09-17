@@ -38,7 +38,7 @@ export class SplashScreen extends Scene {
             fontFamily: 'Arial',
             fontSize: '32px',
             color: '#ffffff',
-            backgroundColor: '#4E9A51',
+            backgroundColor: '#b3ffb3',
             padding: { x: 30, y: 15 },
             // @ts-ignore
             borderRadius: 10,

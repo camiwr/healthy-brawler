@@ -33,7 +33,7 @@ export class LevelSelectScene extends Scene {
         for (let i = 1; i <= levelSceneKeys.length; i++) {
             const isUnlocked = i <= this.highestLevelUnlocked;
 
-            const buttonColor = isUnlocked ? '#4E9A51' : '#555555';
+            const buttonColor = isUnlocked ? '#98c9a3' : '#555555';
             const buttonText = isUnlocked ? `Fase ${i}` : '🔒';
 
             const levelButton = this.add.text(positions[i-1].x, positions[i-1].y, buttonText, {

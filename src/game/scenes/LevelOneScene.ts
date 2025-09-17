@@ -9,8 +9,6 @@ export class LevelOneScene extends Scene {
     create() {
         this.add.text(10, 50, 'Fase 1 - Aperte "W" para Vencer!', { color: '#fff' });
         
-        // --- ADICIONE O CÓDIGO ABAIXO ---
-        // Cria um ouvinte para a tecla 'W'
         if (this.input.keyboard) {
             const winKey = this.input.keyboard.addKey('W');
 
