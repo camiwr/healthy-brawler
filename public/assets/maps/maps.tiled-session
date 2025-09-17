@@ -1,0 +1,53 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "level1.tmx",
+    "expandedProjectPaths": [
+    ],
+    "fileStates": {
+        "": {
+            "scaleInDock": 3,
+            "scaleInEditor": 5.5
+        },
+        "level1.tmx": {
+            "scale": 0.75,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 554.6666666666667,
+                "y": 0.6666666666666288
+            }
+        },
+        "level1.tmx#Player": {
+            "scaleInDock": 4
+        },
+        "level1.tmx#objects": {
+            "scaleInDock": 4
+        },
+        "level1.tmx#tileset": {
+            "scaleInDock": 4
+        }
+    },
+    "last.exportedFilePath": "C:/Users/camis/OneDrive/Documentos/mapas-game",
+    "last.imagePath": "C:/Users/camis/Downloads",
+    "map.height": 15,
+    "map.lastUsedExportFilter": "Arquivos de mapa JSON (*.tmj *.json)",
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "map.width": 80,
+    "openFiles": [
+        "level1.tmx"
+    ],
+    "project": "maps.tiled-project",
+    "property.type": "bool",
+    "recentFiles": [
+        "level1.tmx"
+    ],
+    "tileset.embedInMap": true,
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 16
+    }
+}

@@ -32,6 +32,21 @@ export class Preloader extends Scene
         this.load.image('tomato', './fruits/tomato.png');
         this.load.image('corn', './fruits/corn.png');
         this.load.image('lime', './fruits/lime.png');
+    
+    // --- ASSETS PARA A FASE 1 ---
+    this.load.image('tileset_terrain', 'images/tileset.png');
+    this.load.image('tileset_objects', 'images/objects.png');
+
+    this.load.tilemapTiledJSON('map_level1', 'maps/level1.json');
+    this.load.spritesheet('player', 'images/Player.png', {
+        frameWidth: 32,  
+        frameHeight: 32  
+    });
+
+    this.load.spritesheet('slime', 'images/Slime_Green.png', {
+        frameWidth: 32,
+        frameHeight: 32
+    });
     }
 
     create ()
