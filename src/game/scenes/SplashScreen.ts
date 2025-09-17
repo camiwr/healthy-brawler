@@ -11,7 +11,7 @@ export class SplashScreen extends Scene {
 
         // 1. Frutinhas Flutuando (MUDEI A ORDEM PARA FICAR NO FUNDO)
         const fruitKeys = ['apple', 'banana', 'strawberry', 'grape', 'watermelon', 'pineapple', 'corn', 'lime'];
-        for (let i = 0; i < 30; i++) {
+        for (let i = 0; i < 20; i++) {
             const x = Phaser.Math.Between(0, this.cameras.main.width);
             const y = Phaser.Math.Between(0, this.cameras.main.height);
             const key = Phaser.Utils.Array.GetRandom(fruitKeys);
@@ -38,7 +38,7 @@ export class SplashScreen extends Scene {
             fontFamily: 'Arial',
             fontSize: '32px',
             color: '#ffffff',
-            backgroundColor: '#b3ffb3',
+            backgroundColor: '#deb3ffff',
             padding: { x: 30, y: 15 },
             // @ts-ignore
             borderRadius: 10,

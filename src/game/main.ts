@@ -1,6 +1,6 @@
 import { Boot } from './scenes/BootScene';
 import { GameOver } from './scenes/GameOverScene';
-import { AUTO, Game } from 'phaser';
+import { AUTO, Game, Scale } from 'phaser';
 import { Preloader } from './scenes/PreloaderScene';
 import { SplashScreen } from './scenes/SplashScreen';
 import { LevelSelectScene } from './scenes/LevelSelectScene';
@@ -8,9 +8,14 @@ import { LevelOneScene } from './scenes/LevelOneScene';
 
 const config: Phaser.Types.Core.GameConfig = {
     type: AUTO,
-    width: 1224,
-    height: 768,
-    parent: 'game-container',
+    scale: {
+        parent: 'game-container',
+        mode: Scale.FIT, 
+        autoCenter: Scale.CENTER_BOTH, 
+        width: 1000,
+        height: 540
+    },
+    pixelArt: true,
     backgroundColor: '#78c3fb',
      physics: {
         default: 'arcade',
