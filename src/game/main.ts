@@ -1,5 +1,5 @@
 import { Boot } from './scenes/BootScene';
-import { GameOver } from './scenes/GameOverScene';
+import { GameOverScene } from './scenes/GameOverScene';
 import { AUTO, Game, Scale } from 'phaser';
 import { Preloader } from './scenes/PreloaderScene';
 import { SplashScreen } from './scenes/SplashScreen';
@@ -29,7 +29,7 @@ const config: Phaser.Types.Core.GameConfig = {
         SplashScreen,
         LevelSelectScene,
         LevelOneScene,
-        GameOver,
+        GameOverScene,
     ]
 };
 

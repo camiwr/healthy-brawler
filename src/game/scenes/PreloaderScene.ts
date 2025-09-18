@@ -1,14 +1,11 @@
 import { Scene } from 'phaser';
 
-export class Preloader extends Scene
-{
-    constructor ()
-    {
+export class Preloader extends Scene {
+    constructor() {
         super('Preloader');
     }
 
-    init ()
-    {
+    init() {
         this.add.rectangle(512, 384, 468, 32).setStrokeStyle(1, 0xffffff);
         const bar = this.add.rectangle(512 - 230, 384, 4, 28, 0xffffff);
 
@@ -17,8 +14,7 @@ export class Preloader extends Scene
         });
     }
 
-    preload ()
-    {
+    preload() {
         this.load.setPath('assets');
 
         this.load.image('logo_brawler', 'logo-healthy-brawler.png');
@@ -32,29 +28,113 @@ export class Preloader extends Scene
         this.load.image('tomato', './fruits/tomato.png');
         this.load.image('corn', './fruits/corn.png');
         this.load.image('lime', './fruits/lime.png');
-    
-    // --- ASSETS PARA A FASE 1 ---
-    this.load.image('tileset_terrain', 'images/tileset.png');
-    this.load.image('tileset_objects', 'images/objects.png');
 
-    this.load.tilemapTiledJSON('map_level1', 'maps/level1.json');
-    this.load.spritesheet('player', 'images/Player.png', {
-        frameWidth: 32,  
-        frameHeight: 32  
-    });
+        this.load.image('tileset_terrain', 'images/tileset.png');
+        this.load.image('tileset_objects', 'images/objects.png');
 
-    this.load.spritesheet('slime', 'images/Slime_Green.png', {
-        frameWidth: 32,
-        frameHeight: 32
-    });
+        this.load.tilemapTiledJSON('map_level1', 'maps/level1.json');
+        this.load.spritesheet('player', 'images/Player.png', {
+            frameWidth: 32,
+            frameHeight: 32
+        });
+
+        this.load.spritesheet('slime', 'images/Slime.png', {
+            frameWidth: 32,
+            frameHeight: 32
+        });
+
+        this.load.spritesheet('hearts', 'images/hearts.png', {
+            frameWidth: 17,
+            frameHeight: 17
+        });
     }
 
-    create ()
-    {
-        //  When all the assets have loaded, it's often worth creating global objects here that the rest of the game can use.
-        //  For example, you can define global animations here, so we can use them in other scenes.
+    create() {
+        // --- ANIMAÇÕES DO PLAYER ---
+        // A spritesheet do player tem 6 colunas de frames.
+        const playerFramesInRow = 6;
 
-        //  Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.
+        // Linha 0: Andar para baixo
+        this.anims.create({
+            key: 'player-walk-down',
+            frames: this.anims.generateFrameNumbers('player', { start: 0, end: 3 }),
+            frameRate: 8,
+            repeat: -1
+        });
+
+        // Linha 1: Andar para a esquerda/direita (usaremos flipX)
+        this.anims.create({
+            key: 'player-walk-side',
+            frames: this.anims.generateFrameNumbers('player', { start: 6, end: 9 }),
+            frameRate: 8,
+            repeat: -1
+        });
+
+        // Linha 2: Andar para cima
+        this.anims.create({
+            key: 'player-walk-up',
+            frames: this.anims.generateFrameNumbers('player', { start: 12, end: 15 }),
+            frameRate: 8,
+            repeat: -1
+        });
+
+        // Linha 6 (frames 36 a 39): Ataque para baixo
+        this.anims.create({
+            key: 'player-attack-down',
+            frames: this.anims.generateFrameNumbers('player', { start: 36, end: 39 }),
+            frameRate: 12,
+            repeat: 0
+        });
+
+        // Linha 7 (frames 42 a 45): Ataque para o lado
+        this.anims.create({
+            key: 'player-attack-side',
+            frames: this.anims.generateFrameNumbers('player', { start: 42, end: 45 }),
+            frameRate: 12,
+            repeat: 0
+        });
+
+        // Linha 8 (frames 48 a 51): Ataque para cima
+        this.anims.create({
+            key: 'player-attack-up',
+            frames: this.anims.generateFrameNumbers('player', { start: 48, end: 51 }),
+            frameRate: 12,
+            repeat: 0
+        });
+
+        // Linha 9 (frames 54 e 55): Morte
+        this.anims.create({
+            key: 'player-die',
+            frames: this.anims.generateFrameNumbers('player', { start: 54, end: 55 }),
+            frameRate: 4,
+            repeat: 0
+        });
+
+        // --- ANIMAÇÕES DO SLIME ---
+        this.anims.create({
+            key: 'slime-idle',
+            frames: this.anims.generateFrameNumbers('slime', { start: 0, end: 3 }),
+            frameRate: 6,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'slime-move',
+            frames: this.anims.generateFrameNumbers('slime', { start: 4, end: 11 }),
+            frameRate: 8,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'slime-die',
+            frames: this.anims.generateFrameNumbers('slime', { start: 12, end: 19 }),
+            frameRate: 12,
+            repeat: 0,
+            hideOnComplete: true 
+        });
+
+
+        console.log('Animações criadas corretamente!');
         this.scene.start('SplashScreen');
     }
 }
