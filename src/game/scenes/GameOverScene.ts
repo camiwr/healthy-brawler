@@ -6,19 +6,15 @@ export class GameOverScene extends Scene {
     }
 
     create() {
-        this.cameras.main.setBackgroundColor(0xff0000);
+        this.cameras.main.setBackgroundColor('#000');
+        
+        this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2 - 50, 'gameover');
 
-        this.add.text(this.cameras.main.width / 2, this.cameras.main.height / 2 - 50, 'Game Over', {
-            fontFamily: 'Arial Black', fontSize: 64, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8
-        }).setOrigin(0.5);
-
-        const restartButton = this.add.text(this.cameras.main.width / 2, this.cameras.main.height / 2 + 50, 'Clique para Tentar Novamente', {
-            fontSize: '32px', color: '#fff'
+        this.add.text(this.cameras.main.width / 2, this.cameras.main.height / 2 + 50, 'Clique para Tentar Novamente', {
+            fontSize: '24px', color: '#fff'
         }).setOrigin(0.5);
 
         this.input.once('pointerdown', () => {
-            // Reinicia a cena da fase 1
             this.scene.start('LevelOneScene');
         });
     }
