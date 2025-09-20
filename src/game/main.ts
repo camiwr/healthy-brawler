@@ -5,6 +5,7 @@ import { Preloader } from './scenes/PreloaderScene';
 import { SplashScreen } from './scenes/SplashScreen';
 import { LevelSelectScene } from './scenes/LevelSelectScene';
 import { LevelOneScene } from './scenes/LevelOneScene';
+import { UIScene } from './scenes/UIScene';
 
 const config: Phaser.Types.Core.GameConfig = {
     type: AUTO,
@@ -30,6 +31,7 @@ const config: Phaser.Types.Core.GameConfig = {
         LevelSelectScene,
         LevelOneScene,
         GameOverScene,
+        UIScene
     ]
 };
 

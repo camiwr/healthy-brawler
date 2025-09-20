@@ -18,11 +18,11 @@ export class UIScene extends Scene {
         // --- BOTÕES DE NAVEGAÇÃO ---
 
         // Botão de Pausar/Jogar
-        const pauseButton = this.add.image(this.cameras.main.width - 40, 40, 'pause_button')
+        const pauseButton = this.add.image(this.cameras.main.width - 100, 100, 'pause_button')
             .setInteractive({ useHandCursor: true });
 
         // Botão de Voltar ao Menu
-        const menuButton = this.add.image(this.cameras.main.width - 100, 40, 'menu_button')
+        const menuButton = this.add.image(this.cameras.main.width - 100, 140, 'menu_button')
             .setInteractive({ useHandCursor: true });
 
         // --- LÓGICA DOS BOTÕES ---
