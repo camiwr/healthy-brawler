@@ -103,9 +103,9 @@ export class LevelOneScene extends Scene {
     }
 
     private winLevel(): void {
-        if (this.scene.isActive()) {
+        if (this.scene.isActive()) { 
             console.log('Fase 1 Vencida!');
-            this.scene.stop('UIScene');
+            this.scene.stop('UIScene'); 
             GameProgress.unlockNextLevel(1);
             this.scene.start('LevelSelectScene');
         }
