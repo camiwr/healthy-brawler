@@ -47,14 +47,18 @@ export class Preloader extends Scene {
             frameWidth: 17,
             frameHeight: 17
         });
+
+        this.load.image('menu_button', './UI/menuB.png');
+        this.load.image('play_button', './UI/jogar.png');
+        this.load.image('pause_button', './UI/pausar.png');
+        this.load.image('yes_button', './UI/sim.png');
+        this.load.image('no_button', './UI/nao.png');
+        this.load.image('heart', './UI/heart.png');
+        this.load.image('game_over', './UI/game-over.png');
     }
 
     create() {
-        // --- ANIMAÇÕES DO PLAYER ---
-        // A spritesheet do player tem 6 colunas de frames.
-        const playerFramesInRow = 6;
-
-        // Linha 0: Andar para baixo
+        // --- ANIMAÇÕES DE PLAYER ---
         this.anims.create({
             key: 'player-walk-down',
             frames: this.anims.generateFrameNumbers('player', { start: 0, end: 3 }),
@@ -62,7 +66,6 @@ export class Preloader extends Scene {
             repeat: -1
         });
 
-        // Linha 1: Andar para a esquerda/direita (usaremos flipX)
         this.anims.create({
             key: 'player-walk-side',
             frames: this.anims.generateFrameNumbers('player', { start: 6, end: 9 }),
@@ -70,7 +73,6 @@ export class Preloader extends Scene {
             repeat: -1
         });
 
-        // Linha 2: Andar para cima
         this.anims.create({
             key: 'player-walk-up',
             frames: this.anims.generateFrameNumbers('player', { start: 12, end: 15 }),
@@ -78,7 +80,6 @@ export class Preloader extends Scene {
             repeat: -1
         });
 
-        // Linha 6 (frames 36 a 39): Ataque para baixo
         this.anims.create({
             key: 'player-attack-down',
             frames: this.anims.generateFrameNumbers('player', { start: 36, end: 39 }),
@@ -86,7 +87,6 @@ export class Preloader extends Scene {
             repeat: 0
         });
 
-        // Linha 7 (frames 42 a 45): Ataque para o lado
         this.anims.create({
             key: 'player-attack-side',
             frames: this.anims.generateFrameNumbers('player', { start: 42, end: 45 }),
@@ -94,7 +94,6 @@ export class Preloader extends Scene {
             repeat: 0
         });
 
-        // Linha 8 (frames 48 a 51): Ataque para cima
         this.anims.create({
             key: 'player-attack-up',
             frames: this.anims.generateFrameNumbers('player', { start: 48, end: 51 }),
@@ -102,7 +101,6 @@ export class Preloader extends Scene {
             repeat: 0
         });
 
-        // Linha 9 (frames 54 e 55): Morte
         this.anims.create({
             key: 'player-die',
             frames: this.anims.generateFrameNumbers('player', { start: 54, end: 55 }),
@@ -110,7 +108,7 @@ export class Preloader extends Scene {
             repeat: 0
         });
 
-        // --- ANIMAÇÕES DO SLIME ---
+        // --- ANIMAÇÕES DE INIMIGOS ---
         this.anims.create({
             key: 'slime-idle',
             frames: this.anims.generateFrameNumbers('slime', { start: 0, end: 3 }),
