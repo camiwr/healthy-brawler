@@ -79,6 +79,7 @@ export class Preloader extends Scene {
             frameRate: 8,
             repeat: -1
         });
+        
 
         this.anims.create({
             key: 'player-attack-down',
