@@ -55,6 +55,13 @@ export class Preloader extends Scene {
         this.load.image('no_button', './UI/nao.png');
         this.load.image('heart', './UI/heart.png');
         this.load.image('game_over', './UI/game-over.png');
+
+        this.load.image('level_1_button', './UI/one.png');
+        this.load.image('level_2_button', './UI/two.png');
+        this.load.image('level_3_button', './UI/three.png');
+        this.load.image('level_lock_button', './UI/lock.png');
+
+        this.load.image('title_level_select', './UI/selecioneAFase.png');
     }
 
     create() {

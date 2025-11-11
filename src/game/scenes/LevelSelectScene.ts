@@ -9,49 +9,60 @@ export class LevelSelectScene extends Scene {
     }
 
     create() {
-        // Pega o progresso do jogador assim que a cena é criada
+        // Pega o progresso do jogador
         this.highestLevelUnlocked = GameProgress.getHighestLevelUnlocked();
 
-        this.add.text(this.cameras.main.width / 2, 100, 'Seleção de Fases', {
-            fontSize: '48px', color: '#fff'
-        }).setOrigin(0.5);
+        // Título (agora com imagem pixel art e escala ajustada)
+        // --- LINHA MODIFICADA ---
+        this.add.image(this.cameras.main.width / 2, 100, 'title_level_select')
+            .setOrigin(0.5)
+            .setScale(0.8); // <-- AJUSTE AQUI (ex: 0.8 = 80% do tamanho)
+        // --- FIM DA MODIFICAÇÃO ---
 
-        const levelSceneKeys = [
-            'LevelOneScene', 
-            'LevelTwoScene', // Adicione aqui as chaves das próximas fases quando criá-las
-            'LevelThreeScene',
-            'LevelFourScene',
-                ];
+        // Define as cenas e as imagens dos botões
+        const levelData = [
+            { scene: 'LevelOneScene', image: 'level_1_button' },
+            { scene: 'LevelTwoScene', image: 'level_2_button' },
+            { scene: 'LevelThreeScene', image: 'level_3_button' },
+            // { scene: 'LevelFourScene', image: 'level_4_button' }, 
+        ];
 
+        // Posições dos botões na tela
         const positions = [
             { x: 200, y: 300 },
             { x: 400, y: 300 },
             { x: 600, y: 300 },
-            { x: 800, y: 300 },
+            { x: 800, y: 300 }, // Posição para o nível 4
         ];
+        
+        // --- LÓGICA DE BOTÕES ATUALIZADA ---
 
-        for (let i = 1; i <= levelSceneKeys.length; i++) {
+        for (let i = 1; i <= 4; i++) {
+            const pos = positions[i-1];
             const isUnlocked = i <= this.highestLevelUnlocked;
+            const levelInfo = levelData[i-1]; 
 
-            const buttonColor = isUnlocked ? '#98c9a3' : '#555555';
-            const buttonText = isUnlocked ? `Fase ${i}` : '🔒';
+            let button: Phaser.GameObjects.Image;
 
-            const levelButton = this.add.text(positions[i-1].x, positions[i-1].y, buttonText, {
-                fontSize: '40px',
-                color: '#fff',
-                backgroundColor: buttonColor,
-                padding: { x: 40, y: 20 },
-                align: 'center'
-            }).setOrigin(0.5);
-
-            if (isUnlocked) {
-                levelButton.setInteractive({ useHandCursor: true });
-                levelButton.on('pointerdown', () => {
-                    // Inicia a cena da fase correspondente
-                    const sceneKey = levelSceneKeys[i - 1];
-                    this.scene.start(sceneKey);
+            if (isUnlocked && levelInfo) {
+                button = this.add.image(pos.x, pos.y, levelInfo.image)
+                    .setInteractive({ useHandCursor: true })
+                    .setScale(0.3); 
+                
+                button.on('pointerover', () => button.setTint(0xDDDDDD));
+                button.on('pointerout', () => button.clearTint());
+                button.on('pointerdown', () => button.setTint(0xAAAAAA));
+                button.on('pointerup', () => {
+                    button.clearTint();
+                    this.scene.start(levelInfo.scene);
                 });
+
+            } else {
+                button = this.add.image(pos.x, pos.y, 'level_lock_button')
+                    .setScale(0.3); 
             }
+            
+            button.setOrigin(0.5);
         }
     }
 }
