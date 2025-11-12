@@ -4,57 +4,89 @@ export class UIScene extends Scene {
     private hearts: Phaser.GameObjects.Image[] = [];
     private maxHealth: number = 5;
     private isPaused: boolean = false;
+    
+    private parentScene: Scene;
+    private pauseModal: Phaser.GameObjects.Container;
+    private pauseButton: Phaser.GameObjects.Image; 
 
     constructor() {
         super({ key: 'UIScene' });
     }
 
+    init(data: { parentSceneKey: string }) {
+        // Armazena a referência da cena pai (ex: LevelOneScene, LevelTwoScene, etc.)
+        this.parentScene = this.scene.get(data.parentSceneKey);
+    }
+
     create() {
         // --- MOSTRADOR DE VIDA (CORAÇÕES) ---
-        const gameScene = this.scene.get('LevelOneScene');
         this.drawHearts(this.maxHealth);
-        gameScene.events.on('playerHealthChanged', this.updateHearts, this);
+        this.parentScene.events.on('playerHealthChanged', this.updateHearts, this);
 
-        // --- BOTÕES DE NAVEGAÇÃO ---
+        
+        // --- BOTÃO DE PAUSAR (CANTO DA TELA) ---
+        this.pauseButton = this.add.image(this.cameras.main.width - 50, 40, 'pause_button')
+            .setInteractive({ useHandCursor: true })
+            .setScale(0.2)
 
-        // Botão de Pausar/Jogar
-        const pauseButton = this.add.image(this.cameras.main.width - 100, 100, 'pause_button')
-            .setInteractive({ useHandCursor: true });
 
-        // Botão de Voltar ao Menu
-        const menuButton = this.add.image(this.cameras.main.width - 100, 140, 'menu_button')
-            .setInteractive({ useHandCursor: true });
+        // --- CRIAÇÃO DO MODAL DE PAUSA (COMEÇA ESCONDIDO) ---
+        
+        // 1. Cria o Container
+        this.pauseModal = this.add.container(this.cameras.main.width / 2, this.cameras.main.height / 2);
+        this.pauseModal.setDepth(100);
+        this.pauseModal.setVisible(false);
 
-        // --- LÓGICA DOS BOTÕES ---
+        // 2. Adiciona sua imagem "box.png" como fundo
+        const modalBackground = this.add.image(0, 0, 'pause_modal_bg');
+        modalBackground.setScale(1); 
+        this.pauseModal.add(modalBackground);
 
-        pauseButton.on('pointerdown', () => {
-            this.isPaused = !this.isPaused;
-            if (this.isPaused) {
-                // Pausa a cena do jogo
-                gameScene.scene.pause();
-                pauseButton.setTexture('play_button'); // Troca a imagem para o botão de "play"
-            } else {
-                // Retoma a cena do jogo
-                gameScene.scene.resume();
-                pauseButton.setTexture('pause_button'); // Troca a imagem de volta para "pause"
-            }
+        // 3. Adiciona os botões "Continuar" e "Menu" DENTRO do modal
+        const resumeButton = this.add.image(0, -30, 'resume_button')
+            .setInteractive({ useHandCursor: true })
+            .setScale(0.5);
+
+        const menuButton = this.add.image(0, 45, 'menu_button') 
+            .setInteractive({ useHandCursor: true })
+            .setScale(0.5); 
+
+        this.pauseModal.add(resumeButton);
+        this.pauseModal.add(menuButton);
+
+
+        // --- LÓGICA DE EVENTOS ---
+
+        // CLICAR NO BOTÃO "PAUSAR" (CANTO DA TELA)
+        this.pauseButton.on('pointerdown', () => {
+            this.isPaused = true;
+            this.parentScene.scene.pause();
+            this.pauseButton.setVisible(false);
+            this.pauseModal.setVisible(true); 
         });
 
+        // CLICAR NO BOTÃO "CONTINUAR" (DENTRO DO MODAL)
+        resumeButton.on('pointerdown', () => {
+            this.isPaused = false;
+            this.parentScene.scene.resume();
+            this.pauseModal.setVisible(false);
+            this.pauseButton.setVisible(true);
+        });
+
+        // CLICAR NO BOTÃO "MENU" (DENTRO DO MODAL)
         menuButton.on('pointerdown', () => {
-            // Garante que a cena do jogo não esteja mais pausada ao sair
-            if(this.isPaused) {
-                gameScene.scene.resume();
-            }
-            gameScene.scene.stop(); // Para a cena do jogo
-            this.scene.stop();      // Para a própria UIScene
-            this.scene.start('LevelSelectScene'); // Volta para a seleção de fases
+            this.isPaused = false;
+            this.parentScene.scene.resume();
+            this.parentScene.scene.stop();   
+            this.scene.stop();               
+            this.scene.start('LevelSelectScene'); 
         });
     }
 
     private drawHearts(initialHealth: number): void {
         for (let i = 0; i < this.maxHealth; i++) {
-            // Usa o novo sprite de coração que você carregou
-            const heart = this.add.image(40 + (i * 35), 40, 'heart');
+            const heart = this.add.image(40 + (i * 35), 40, 'heart')
+                .setScale(0.1);
             this.hearts.push(heart);
         }
         this.updateHearts(initialHealth);
@@ -62,7 +94,6 @@ export class UIScene extends Scene {
 
     private updateHearts(currentHealth: number): void {
         for (let i = 0; i < this.hearts.length; i++) {
-            // Mostra ou esconde o coração para representar a vida
             this.hearts[i].setVisible(i < currentHealth);
         }
     }

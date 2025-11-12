@@ -48,13 +48,15 @@ export class Preloader extends Scene {
             frameHeight: 17
         });
 
-        this.load.image('menu_button', './UI/menuB.png');
+        this.load.image('menu_button', './UI/menu.png');
         this.load.image('play_button', './UI/jogar.png');
         this.load.image('pause_button', './UI/pausar.png');
         this.load.image('yes_button', './UI/sim.png');
         this.load.image('no_button', './UI/nao.png');
         this.load.image('heart', './UI/heart.png');
         this.load.image('game_over', './UI/game-over.png');
+        this.load.image('resume_button', './UI/continuar.png');
+        this.load.image('pause_modal_bg', './UI/box.png');
 
         this.load.image('level_1_button', './UI/one.png');
         this.load.image('level_2_button', './UI/two.png');

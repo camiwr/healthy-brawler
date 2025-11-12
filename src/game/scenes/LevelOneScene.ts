@@ -84,7 +84,7 @@ export class LevelOneScene extends Scene {
             (player as Player).takeDamage(1);
         });
 
-        this.scene.launch('UIScene');
+        this.scene.launch('UIScene', { parentSceneKey: this.scene.key });
         this.scene.bringToTop('UIScene');
     }
 

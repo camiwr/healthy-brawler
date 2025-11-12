@@ -12,12 +12,9 @@ export class LevelSelectScene extends Scene {
         // Pega o progresso do jogador
         this.highestLevelUnlocked = GameProgress.getHighestLevelUnlocked();
 
-        // Título (agora com imagem pixel art e escala ajustada)
-        // --- LINHA MODIFICADA ---
         this.add.image(this.cameras.main.width / 2, 100, 'title_level_select')
             .setOrigin(0.5)
-            .setScale(0.8); // <-- AJUSTE AQUI (ex: 0.8 = 80% do tamanho)
-        // --- FIM DA MODIFICAÇÃO ---
+            .setScale(1.0);
 
         // Define as cenas e as imagens dos botões
         const levelData = [

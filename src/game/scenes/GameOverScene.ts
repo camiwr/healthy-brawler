@@ -1,8 +1,14 @@
 import { Scene } from 'phaser';
 
 export class GameOverScene extends Scene {
+    private restartingSceneKey: string;
+
     constructor() {
         super('GameOverScene');
+    }
+
+    init(data: { restartingSceneKey: string }) {
+        this.restartingSceneKey = data.restartingSceneKey;
     }
 
     create() {
@@ -15,7 +21,8 @@ export class GameOverScene extends Scene {
         }).setOrigin(0.5);
 
         this.input.once('pointerdown', () => {
-            this.scene.start('LevelOneScene');
+
+            this.scene.start(this.restartingSceneKey);
         });
     }
 }
