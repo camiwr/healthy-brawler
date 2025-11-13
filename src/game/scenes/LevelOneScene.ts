@@ -10,6 +10,7 @@ export class LevelOneScene extends Scene {
     private slimes: Physics.Arcade.Group;
     private projectiles: Physics.Arcade.Group;
     private collectibles: Physics.Arcade.Group;
+    private map: Tilemaps.Tilemap;
 
     // Lista de frutas que podemos "dropar"
     private fruitList = [
@@ -27,24 +28,24 @@ export class LevelOneScene extends Scene {
     }
 
     create() {
-        const map = this.make.tilemap({ key: 'map_level1' });
+        this.map = this.make.tilemap({ key: 'map_level1' });
 
-        const terrainTileset = map.addTilesetImage('tileset', 'tileset_terrain');
-        const objectTileset = map.addTilesetImage('objects', 'tileset_objects');
+        const terrainTileset = this.map.addTilesetImage('tileset', 'tileset_terrain');
+        const objectTileset = this.map.addTilesetImage('objects', 'tileset_objects');
 
         if (terrainTileset) {
-            map.createLayer('grass', terrainTileset);
-            map.createLayer('ground', terrainTileset);
-            map.createLayer('lake', terrainTileset);
+            this.map.createLayer('grass', terrainTileset);
+            this.map.createLayer('ground', terrainTileset);
+            this.map.createLayer('lake', terrainTileset);
         }
         if (objectTileset) {
-            map.createLayer('flowers', objectTileset);
-            map.createLayer('house', objectTileset);
-            map.createLayer('decorations', objectTileset);
+            this.map.createLayer('flowers', objectTileset);
+            this.map.createLayer('house', objectTileset);
+            this.map.createLayer('decorations', objectTileset);
         }
         let wallsLayer;
         if (terrainTileset) {
-            wallsLayer = map.createLayer('walls', terrainTileset);
+            wallsLayer = this.map.createLayer('walls', terrainTileset);
         }
         if (wallsLayer) {
             wallsLayer.setCollisionByProperty({ collider: true });
@@ -66,7 +67,7 @@ export class LevelOneScene extends Scene {
         });
 
         // --- CRIAR PLAYER ---
-        const playerSpawn = map.findObject('player', obj => obj.name === 'spawning point');
+        const playerSpawn = this.map.findObject('player', obj => obj.name === 'spawning point');
         if (playerSpawn && typeof playerSpawn.x === 'number' && typeof playerSpawn.y === 'number') {
             this.player = new Player(this, playerSpawn.x, playerSpawn.y);
         } else {
@@ -76,7 +77,7 @@ export class LevelOneScene extends Scene {
 
         // --- CRIAR SLIMES ---
         this.slimes = this.physics.add.group({ classType: Slime, runChildUpdate: true });
-        const enemysLayer = map.getObjectLayer('enemys');
+        const enemysLayer = this.map.getObjectLayer('enemys');
         if (enemysLayer && enemysLayer.objects) {
             enemysLayer.objects.forEach(spawn => {
                 if (spawn.x && spawn.y) {
@@ -86,7 +87,7 @@ export class LevelOneScene extends Scene {
         }
         
         // --- CRIAR AS FRUTAS DO MAPA ---
-        const fruitLayer = map.getObjectLayer('dropFruit');
+        const fruitLayer = this.map.getObjectLayer('dropFruit');
         if (fruitLayer && fruitLayer.objects) {
             fruitLayer.objects.forEach(fruitSpawn => {
                 if (fruitSpawn.type === 'fruit' && fruitSpawn.x && fruitSpawn.y) {
@@ -106,8 +107,8 @@ export class LevelOneScene extends Scene {
         }
 
         // --- CÂMERA E FÍSICA ---
-        this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
-        this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+        this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
+        this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
         this.cameras.main.startFollow(this.player, true, 0.08, 0.08);
         this.cameras.main.setZoom(2.5);
 
@@ -193,6 +194,7 @@ export class LevelOneScene extends Scene {
     }
 
     private winLevel(): void {
+        console.log('Método winLevel chamado. Verificando condições para desbloquear próximo nível.');
         if (this.scene.isActive()) { 
             console.log('Fase 1 Vencida!');
             
@@ -206,5 +208,76 @@ export class LevelOneScene extends Scene {
                 nextSceneKey: 'LevelTwoScene'  
             });
         }
+    }
+
+    public resetLevel(): void {
+        // Destruir grupos existentes
+        this.projectiles.destroy(true);
+        this.collectibles.destroy
+        if (this.player) {
+            this.player.destroy();
+        }
+
+        // Recriar grupos
+        this.projectiles = this.physics.add.group({
+            classType: Projectile,
+            runChildUpdate: true,
+            createCallback: (proj) => {
+                (proj as Projectile).setActive(false).setVisible(false);
+            }
+        });
+
+        this.collectibles = this.physics.add.group({
+            classType: Collectible,
+            runChildUpdate: true 
+        });
+
+        // Recriar player
+        const playerSpawn = this.map.findObject('player', obj => obj.name === 'spawning point');
+        if (playerSpawn && typeof playerSpawn.x === 'number' && typeof playerSpawn.y === 'number') {
+            this.player = new Player(this, playerSpawn.x, playerSpawn.y);
+        } else {
+            this.player = new Player(this, 100, 100);
+        }
+
+        // Recriar slimes
+        this.slimes = this.physics.add.group({ classType: Slime, runChildUpdate: true });
+        const enemysLayer = this.map.getObjectLayer('enemys');
+        if (enemysLayer && enemysLayer.objects) {
+            enemysLayer.objects.forEach(spawn => {
+                if (spawn.x && spawn.y) {
+                    this.slimes.add(new Slime(this, spawn.x, spawn.y, this.player));
+                }
+            });
+        }
+
+        // Recriar frutas
+        const fruitLayer = this.map.getObjectLayer('dropFruit');
+        if (fruitLayer && fruitLayer.objects) {
+            fruitLayer.objects.forEach(fruitSpawn => {
+                if (fruitSpawn.type === 'fruit' && fruitSpawn.x && fruitSpawn.y) {
+                    const randomFruit = Phaser.Utils.Array.GetRandom(this.fruitList);
+                    this.collectibles.add(
+                        new Collectible(
+                            this, 
+                            fruitSpawn.x, 
+                            fruitSpawn.y, 
+                            randomFruit.texture, 
+                            randomFruit.anim, 
+                            'HEALTH'
+                        )
+                    );
+                }
+            });
+        }
+
+        // Recriar colisões (assumindo wallsLayer ainda existe, mas como layers são criados uma vez, talvez não precise recriar)
+        // Para simplificar, assumimos que layers estão ok.
+
+        // Reiniciar câmera
+        this.cameras.main.startFollow(this.player, true, 0.08, 0.08);
+
+        // Reiniciar UI
+        this.scene.launch('UIScene');
     }
 }

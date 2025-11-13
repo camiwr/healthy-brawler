@@ -14,11 +14,13 @@ export class UIScene extends Scene {
     }
 
     init(data: { parentSceneKey: string }) {
+        console.log('UIScene init chamado com', data);
         // Armazena a referência da cena pai (ex: LevelOneScene, LevelTwoScene, etc.)
         this.parentScene = this.scene.get(data.parentSceneKey);
     }
 
     create() {
+        console.log('UIScene create chamado');
         // --- MOSTRADOR DE VIDA (CORAÇÕES) ---
         this.drawHearts(this.maxHealth);
         this.parentScene.events.on('playerHealthChanged', this.updateHearts, this);
@@ -84,17 +86,29 @@ export class UIScene extends Scene {
     }
 
     private drawHearts(initialHealth: number): void {
+        console.log('Desenhando corações com saúde inicial:', initialHealth);
+
+        // Limpa corações antigos
+        this.hearts.forEach(heart => heart.destroy());
+        this.hearts = [];
+
         for (let i = 0; i < this.maxHealth; i++) {
-            const heart = this.add.image(40 + (i * 35), 40, 'heart')
-                .setScale(0.1);
+            const x = 40 + (i * 35);
+            const y = 40;
+            console.log(`Criando coração na posição (${x}, ${y})`);
+            const heart = this.add.image(x, y, 'heart')
+                .setScale(0.1); 
             this.hearts.push(heart);
         }
         this.updateHearts(initialHealth);
     }
 
     private updateHearts(currentHealth: number): void {
+        console.log('Atualizando corações. Saúde atual:', currentHealth);
         for (let i = 0; i < this.hearts.length; i++) {
-            this.hearts[i].setVisible(i < currentHealth);
+            const visible = i < currentHealth;
+            console.log(`Coração ${i} visível: ${visible}`);
+            this.hearts[i].setVisible(visible);
         }
     }
 }

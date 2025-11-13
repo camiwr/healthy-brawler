@@ -42,10 +42,13 @@ export class Player extends Physics.Arcade.Sprite {
         if (this.health <= 0) {
             this.active = false;
             this.setVelocity(0);
-            this.anims.play('player-die');
-            this.once('animationcomplete', () => {
-                this.scene.scene.start('GameOverScene', { restartingSceneKey: this.scene.scene.key }); 
-            });
+            // this.anims.play('player-die');
+            // this.once('animationcomplete', () => {
+                this.scene.scene.pause(this.scene.scene.key); // Pausa a cena atual
+                this.scene.scene.launch('GameOverScene', { 
+                    parentSceneKey: this.scene.scene.key 
+                });
+            // });
         } else {
             this.scene.tweens.add({
                 targets: this, alpha: 0.5, duration: 150, yoyo: true, repeat: 4,
