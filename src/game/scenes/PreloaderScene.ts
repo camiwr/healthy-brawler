@@ -32,16 +32,18 @@ export class Preloader extends Scene {
         this.load.image('tileset_terrain', 'images/tileset.png');
         this.load.image('tileset_objects', 'images/objects.png');
 
-        this.load.tilemapTiledJSON('map_level1', 'maps/level1.json');
+
+        this.load.tilemapTiledJSON('map_level1', 'maps/level1/level1.json');
+        // this.load.tilemapTiledJSON('map_level2', 'maps/level2/level2.json');
+        // this.load.tilemapTiledJSON('map_level3', 'maps/level3/level3.json');
         this.load.spritesheet('player', 'images/Player.png', {
             frameWidth: 32,
             frameHeight: 32
         });
 
-        this.load.spritesheet('slime', 'images/Slime.png', {
-            frameWidth: 32,
-            frameHeight: 32
-        });
+        this.load.spritesheet('slime-idle-sheet', 'images/Slime-idle.png', { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet('slime-run-sheet', 'images/Slime-move.png', { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet('slime-die-sheet', 'images/Slime-die.png', { frameWidth: 32, frameHeight: 32 });
 
         this.load.spritesheet('hearts', 'images/hearts.png', {
             frameWidth: 17,
@@ -56,7 +58,11 @@ export class Preloader extends Scene {
         this.load.image('heart', './UI/heart.png');
         this.load.image('game_over', './UI/game-over.png');
         this.load.image('resume_button', './UI/continuar.png');
-        this.load.image('pause_modal_bg', './UI/box.png');
+        this.load.image('pause_modal_bg', './UI/box.png')
+
+        this.load.image('victory_graphic', 'UI/win-scene.png');
+        this.load.image('next_button', 'UI/proximo.png');
+        this.load.image('back_button', 'UI/voltar.png');
 
         this.load.image('level_1_button', './UI/one.png');
         this.load.image('level_2_button', './UI/two.png');
@@ -64,6 +70,26 @@ export class Preloader extends Scene {
         this.load.image('level_lock_button', './UI/lock.png');
 
         this.load.image('title_level_select', './UI/selecioneAFase.png');
+
+        // Imagens dos projéteis
+        this.load.image('proj_1', './projectiles/FB500-1.png');
+        this.load.image('proj_2', './projectiles/FB500-2.png');
+        this.load.image('proj_3', './projectiles/FB500-3.png');
+        this.load.image('proj_4', './projectiles/FB500-4.png');
+        this.load.image('proj_5', './projectiles/FB500-5.png');
+
+
+        // Frutas de coleta animadas
+        const fruitFrameSize = { frameWidth: 32, frameHeight: 32 }; // Ajuste o tamanho se for diferente
+        this.load.spritesheet('collect_apple', './animated/Apples.png', fruitFrameSize);
+        this.load.spritesheet('collect_banana', './animated/Bananas.png', fruitFrameSize);
+        this.load.spritesheet('collect_cherry', './animated/Cherries.png', fruitFrameSize);
+        this.load.spritesheet('collect_kiwi', './animated/Kiwi.png', fruitFrameSize);
+        this.load.spritesheet('collect_melon', './animated/Melon.png', fruitFrameSize);
+        this.load.spritesheet('collect_orange', './animated/Orange.png', fruitFrameSize);
+        this.load.spritesheet('collect_pineapple', './animated/Pineapple.png', fruitFrameSize);
+
+        this.load.spritesheet('collect_effect', './animated/Collected.png', { frameWidth: 32, frameHeight: 32 });
     }
 
     create() {
@@ -88,7 +114,7 @@ export class Preloader extends Scene {
             frameRate: 8,
             repeat: -1
         });
-        
+
 
         this.anims.create({
             key: 'player-attack-down',
@@ -119,29 +145,54 @@ export class Preloader extends Scene {
         });
 
         // --- ANIMAÇÕES DE INIMIGOS ---
-        this.anims.create({
-            key: 'slime-idle',
-            frames: this.anims.generateFrameNumbers('slime', { start: 0, end: 3 }),
-            frameRate: 6,
-            repeat: -1
+        this.anims.create({ 
+            key: 'slime-idle', 
+            frames: this.anims.generateFrameNumbers('slime-idle-sheet', { start: 0, end: 3 }), 
+            frameRate: 6, 
+            repeat: -1 
         });
-
-        this.anims.create({
-            key: 'slime-move',
-            frames: this.anims.generateFrameNumbers('slime', { start: 4, end: 11 }),
-            frameRate: 8,
-            repeat: -1
+        
+        this.anims.create({ 
+            key: 'slime-move', 
+            frames: this.anims.generateFrameNumbers('slime-run-sheet', { start: 0, end: 6 }), 
+            frameRate: 8, 
+            repeat: -1 
         });
-
+        
         this.anims.create({
             key: 'slime-die',
-            frames: this.anims.generateFrameNumbers('slime', { start: 12, end: 19 }),
-            frameRate: 12,
-            repeat: 0,
-            hideOnComplete: true 
+            frames: this.anims.generateFrameNumbers('slime-die-sheet', { start: 0, end: 6 }), 
+            frameRate: 8,
+            repeat: 0 
         });
 
+        // --- ANIMAÇÕES DE PROJÉTEIS ---
+        this.anims.create({
+            key: 'projectile-fly',
+            frames: [
+                { key: 'proj_1' },
+                { key: 'proj_2' },
+                { key: 'proj_3' },
+                { key: 'proj_4' },
+                { key: 'proj_5' },
+            ],
+            frameRate: 10,
+            repeat: -1
+        });
 
+        // --- NOVAS ANIMAÇÕES DE FRUTAS E EFEITOS ---
+        const fruitFrameRate = 10;
+        const fruitFrames = { start: 0, end: 16 }; // A maioria das suas frutas tem 17 frames
+        this.anims.create({ key: 'apple-spin', frames: this.anims.generateFrameNumbers('collect_apple', fruitFrames), frameRate: fruitFrameRate, repeat: -1 });
+        this.anims.create({ key: 'banana-spin', frames: this.anims.generateFrameNumbers('collect_banana', fruitFrames), frameRate: fruitFrameRate, repeat: -1 });
+        this.anims.create({ key: 'cherry-spin', frames: this.anims.generateFrameNumbers('collect_cherry', fruitFrames), frameRate: fruitFrameRate, repeat: -1 });
+        this.anims.create({ key: 'kiwi-spin', frames: this.anims.generateFrameNumbers('collect_kiwi', fruitFrames), frameRate: fruitFrameRate, repeat: -1 });
+        this.anims.create({ key: 'melon-spin', frames: this.anims.generateFrameNumbers('collect_melon', fruitFrames), frameRate: fruitFrameRate, repeat: -1 });
+        this.anims.create({ key: 'orange-spin', frames: this.anims.generateFrameNumbers('collect_orange', fruitFrames), frameRate: fruitFrameRate, repeat: -1 });
+        this.anims.create({ key: 'pineapple-spin', frames: this.anims.generateFrameNumbers('collect_pineapple', fruitFrames), frameRate: fruitFrameRate, repeat: -1 });
+
+        // Animação de coleta
+        this.anims.create({ key: 'item-collected', frames: this.anims.generateFrameNumbers('collect_effect', { start: 0, end: 5 }), frameRate: 15, repeat: 0 });
         console.log('Animações criadas corretamente!');
         this.scene.start('SplashScreen');
     }

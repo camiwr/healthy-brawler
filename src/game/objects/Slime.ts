@@ -1,10 +1,19 @@
 import { Scene, Physics } from 'phaser';
 import { Player } from './Player';
 
+// Enum para controlar o estado da animação
+enum SlimeState {
+    IDLE,
+    MOVING,
+    DYING 
+}
+
 export class Slime extends Physics.Arcade.Sprite {
     public health: number = 3;
     private player: Player;
     private moveSpeed: number = 40;
+    
+    private currentState: SlimeState;
 
     constructor(scene: Scene, x: number, y: number, player: Player) {
         super(scene, x, y, 'slime');
@@ -12,46 +21,66 @@ export class Slime extends Physics.Arcade.Sprite {
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.setCollideWorldBounds(true);
+
+        this.currentState = SlimeState.IDLE;
         this.anims.play('slime-idle');
     }
 
+    /**
+     * Lógica de Dano e Morte (Corrigida)
+     */
     public takeDamage(damage: number): void {
-        // Se o slime já está morrendo, não faça nada.
-        if (!this.active) {
+        // Se já está morrendo, não faça nada
+        if (this.currentState === SlimeState.DYING) { // <-- 2. VERIFICA O NOVO ESTADO
             return;
         }
         this.health -= damage;
 
         if (this.health <= 0) {
-            // --- CORREÇÃO DA MORTE ---
-            this.active = false; // Desativa o slime para que ele não se mova mais
-            this.disableBody(true, false); // Desliga a física dele
-            this.anims.play('slime-die'); // Toca a animação de morte
-
-            // Ouve o evento 'animationcomplete'. Quando a animação de morte terminar...
-            this.once('animationcomplete', () => {
-                this.destroy(); // ...então remove o slime do jogo.
+            this.currentState = SlimeState.DYING;  
+            this.disableBody(true, false);     
+            this.anims.play('slime-die');      
+            this.scene.time.delayedCall(500, () => {
+                this.destroy();
             });
-            // -------------------------
+            
         } else {
-            // Efeito de piscar ao tomar dano
+            // Se ainda tem vida, só pisca
             this.scene.tweens.add({ targets: this, alpha: 0.5, duration: 100, yoyo: true });
         }
     }
 
+    /**
+     * Lógica de Update (Corrigida para Animação e Morte)
+     */
     public update(): void {
-        if (!this.active || !this.player.active) {
+        if (this.currentState === SlimeState.DYING) {
+            return; 
+        }
+
+        // Se o player morreu, o slime para
+        if (!this.player.active) {
             this.setVelocity(0);
             return;
         }
 
+        // (Lógica de movimento normal)
         const distanceToPlayer = Phaser.Math.Distance.Between(this.x, this.y, this.player.x, this.player.y);
+        
         if (distanceToPlayer < 150) {
             this.scene.physics.moveToObject(this, this.player, this.moveSpeed);
-            this.anims.play('slime-move', true);
+
+            if (this.currentState !== SlimeState.MOVING) {
+                this.anims.play('slime-move', true);
+                this.currentState = SlimeState.MOVING;
+            }
         } else {
             this.setVelocity(0);
-            this.anims.play('slime-idle', true);
+
+            if (this.currentState !== SlimeState.IDLE) {
+                this.anims.play('slime-idle', true);
+                this.currentState = SlimeState.IDLE;
+            }
         }
     }
 }
