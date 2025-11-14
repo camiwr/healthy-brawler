@@ -1,158 +1,117 @@
-# Phaser Vite TypeScript Template
+# 🥦 Healthy Brawler
 
-This is a Phaser 3 project template that uses Vite for bundling. It supports hot-reloading for quick development workflow, includes TypeScript support and scripts to generate production-ready builds.
+![Phaser](https://img.shields.io/badge/Phaser-3.90.0-purple)
+![TypeScript](https://img.shields.io/badge/TypeScript-blue)
+![Vite](https://img.shields.io/badge/Vite-fast-yellow)
+![Tiled](https://img.shields.io/badge/Editor-Tiled-brightgreen)
+![Aseprite](https://img.shields.io/badge/Pixel_Art-Aseprite-blueviolet)
 
-**[This Template is also available as a JavaScript version.](https://github.com/phaserjs/template-vite)**
+>### 🎮 JOGUE AGORA A VERSAO BETA!
+> **[Acesse a versão aqui!](https://healthy-brawler.vercel.app/)**
+> *(Hospedado na Vercel)*
+ 
+**Healthy Brawler** é um jogo de aventura e ação 2D (top-down) com uma missão educativa: promover hábitos de alimentação saudável. O jogador controla um personagem que explora o mapa, derrota inimigos (Slimes) e coleta frutas para recuperar vida, aprendendo de forma lúdica a importância de uma vida equilibrada.
 
-### Versions
+Este projeto foi desenvolvido como um jogo educativo focado em estudantes, utilizando uma stack moderna de desenvolvimento de jogos web.
 
-This template has been updated for:
+## ✨ Mecânicas Principais
 
-- [Phaser 3.90.0](https://github.com/phaserjs/phaser)
-- [Vite 6.3.1](https://github.com/vitejs/vite)
-- [TypeScript 5.7.2](https://github.com/microsoft/TypeScript)
+O jogo possui um "game loop" completo com as seguintes mecânicas:
 
-![screenshot](screenshot.png)
+* **Movimentação e Ataque:** Controle em 4 direções (top-down) e ataque com projéteis (barra de espaço).
+* **Inimigos (Slimes):** Inimigos com 3 pontos de vida e uma IA simples que persegue o jogador a curta distância (150px).
+* **Sistema de Vida:** O jogador tem 5 pontos de vida, com feedback visual (piscar) ao tomar dano ou ser curado.
+* **Coletáveis (Frutas):** Coletar frutas (maçã, etc.) cura o jogador em 1 ponto de vida.
+* **Coletáveis (Comidas Não-saúdaveis):** Coletar fastfoods (hamburguer, pizza, etc.) diminui a vida do jogador em 1 ponto de vida.
+* **Progressão:** O progresso dos níveis desbloqueados é salvo no `localStorage` do navegador, permitindo que o jogador continue de onde parou.
+* **Ciclo Completo:** O jogo possui menus, seleção de fases, telas de pausa, Game Over (com opção de tentar novamente) e Vitória (com opção de avançar).
 
-## Requirements
+---
 
-[Node.js](https://nodejs.org) is required to install dependencies and run scripts via `npm`.
+## 🛠️ Tecnologias Utilizadas
 
-## Available Commands
+Este projeto foi construído usando uma stack robusta para desenvolvimento de jogos web e design:
 
-| Command | Description |
-|---------|-------------|
-| `npm install` | Install project dependencies |
-| `npm run dev` | Launch a development web server |
-| `npm run build` | Create a production build in the `dist` folder |
-| `npm run dev-nolog` | Launch a development web server without sending anonymous data (see "About log.js" below) |
-| `npm run build-nolog` | Create a production build in the `dist` folder without sending anonymous data (see "About log.js" below) |
+* **Engine de Jogo:** [Phaser 3](https://phaser.io/) (v3.90.0) - Uma engine poderosa e popular para jogos 2D em HTML5.
+* **Linguagem:** [TypeScript](https://www.typescriptlang.org/) - Garante um código mais seguro, organizado e fácil de manter.
+* **Build Tool:** [Vite](https://vitejs.dev/) - Oferece um servidor de desenvolvimento HMR (Hot-Reloading) e um processo de build otimizado para produção.
+* **Editor de Mapas:** [Tiled](https://www.mapeditor.org/) - Usado para criar os mapas do jogo (`.json`) e posicionar entidades.
+* **Criação de Pixel Art:** [Aseprite](https://www.aseprite.org/) - Ferramenta usada para criar e animar os sprites (personagens, inimigos, itens).
+* **Design Gráfico (UI/Logo):** [Canva](https://www.canva.com/) - Usado para criar elementos de interface, logo e outros assets visuais do menu.
+---
 
-## Writing Code
+## 🚀 Como Rodar Localmente
 
-After cloning the repo, run `npm install` from your project directory. Then, you can start the local development server by running `npm run dev`.
+Para rodar o projeto na sua máquina, siga estes passos:
 
-The local development server runs on `http://localhost:8080` by default. Please see the Vite documentation if you wish to change this, or add SSL support.
+1.  **Clone o repositório:**
+    ```bash
+    git clone [https://github.com/](https://github.com/)[SEU-USUARIO]/[NOME-DO-REPOSITORIO].git
+    cd [NOME-DO-REPOSITORIO]
+    ```
 
-Once the server is running you can edit any of the files in the `src` folder. Vite will automatically recompile your code and then reload the browser.
+2.  **Instale as dependências:**
+    (É necessário ter o [Node.js](https://nodejs.org/) instalado)
+    ```bash
+    npm install
+    ```
 
-## Template Project Structure
+3.  **Inicie o servidor de desenvolvimento (Vite):**
+    ```bash
+    npm run dev
+    ```
 
-We have provided a default project structure to get you started. This is as follows:
+4.  Abra o seu navegador e acesse `http://localhost:5173` (ou o endereço indicado no terminal).
 
-## Template Project Structure
+**Outros Comandos:**
 
-We have provided a default project structure to get you started:
+* **Para criar uma build de produção:**
+    ```bash
+    npm run build
+    ```
+    (Os arquivos otimizados estarão na pasta `dist`)
 
-| Path                         | Description                                                |
-|------------------------------|------------------------------------------------------------|
-| `index.html`                 | A basic HTML page to contain the game.                     |
-| `public/assets`              | Game sprites, audio, etc. Served directly at runtime.      |
-| `public/style.css`           | Global layout styles.                                      |
-| `src/main.ts`                | Application bootstrap.                                     |
-| `src/game`                   | Folder containing the game code.                           |
-| `src/game/main.ts`           | Game entry point: configures and starts the game.          |
-| `src/game/scenes`            | Folder with all Phaser game scenes.                        | 
+---
 
+## 🗺️ Estrutura das Cenas
 
-## Handling Assets
+O jogo é modularizado em várias Cenas do Phaser, cada uma com sua responsabilidade, garantindo um código limpo e organizado:
 
-Vite supports loading assets via JavaScript module `import` statements.
+* **`PreloaderScene`**: Carrega todos os assets (imagens, sprites, mapas) e cria todas as animações globais (ex: `player-walk-down`, `slime-idle`).
+* **`SplashScreen`**: O menu principal com o logo e o botão "Jogar".
+* **`LevelSelectScene`**: Tela de seleção de fases, que lê o progresso salvo no `GameProgress.ts` (localStorage) para exibir os níveis desbloqueados.
+* **`LevelOneScene`, `LevelTwoScene`, `LevelOThreeScene`**: As cenas principais, onde ocorre todo o gameplay (criação do mapa, player, slimes, colisões).
+* **`UIScene`**: Renderiza a interface do usuário (corações de vida, botão de pausa) *por cima* da cena do jogo.
+* **`GameOverScene` / `VictoryScene`**: Cenas de modal que aparecem ao morrer ou vencer a fase.
 
-This template provides support for both embedding assets and also loading them from a static folder. To embed an asset, you can import it at the top of the JavaScript file you are using it in:
+---
 
-```js
-import logoImg from './assets/logo.png'
-```
+## 🎯 Próximos Passos
 
-To load static files such as audio files, videos, etc place them into the `public/assets` folder. Then you can use this path in the Loader calls within Phaser:
+O projeto tem uma base sólida e o "game loop" completo para o Nível 1. Os próximos passos para expandir o jogo incluem:
 
-```js
-preload ()
-{
-    //  This is an example of an imported bundled image.
-    //  Remember to import it at the top of this file
-    this.load.image('logo', logoImg);
+* [ ] **Criar Novos Níveis:** Implementar novos desafios, explorando diversas areas.
+* [ ] **Novos Mapas:** Desenhar novos mapas no Tiled.
+* [ ] **Novos Inimigos:** Criar novas classes de inimigos com diferentes IAs.
+* [ ] **Novos Coletáveis:** Adicionar mais frutas e itens.
+* [ ] **Assets:** Incluir os novos assets (sprites, sons) no `PreloaderScene`.
 
-    //  This is an example of loading a static image
-    //  from the public/assets folder:
-    this.load.image('background', 'assets/bg.png');
-}
-```
+---
 
-When you issue the `npm run build` command, all static assets are automatically copied to the `dist/assets` folder.
+## 🎨 Créditos de Arte (Pixel Art)
 
-## Deploying to Production
+Um agradecimento especial aos artistas e às fontes dos assets de pixel art utilizados neste projeto.
 
-After you run the `npm run build` command, your code will be built into a single bundle and saved to the `dist` folder, along with any other assets your project imported, or stored in the public assets folder.
+* **Tilesets Principais e Personagem**: Kenmi Art - [https://kenmi-art.itch.io/](https://kenmi-art.itch.io/)
+* **Assets (Farm RPG)**: EmanuelleDev - [https://emanuelledev.itch.io/farm-rpg](https://emanuelledev.itch.io/farm-rpg)
+* **Tileset (Pixel Lands Forest)**: Trislin - [https://trislin.itch.io/pixel-lands-forest](https://trislin.itch.io/pixel-lands-forest)
+* **Objetos Diversos**: Trislin - [https://trislin.itch.io/](https://trislin.itch.io/)
+* **Sprite (Barco)**: Minzinn - [https://minzinn.itch.io/](https://minzinn.itch.io/)
+* **Sprites (Comidas e Frutas)**: FMPixellence - [https://fmpixellence.itch.io/](https://fmpixellence.itch.io/)
+* **Tileset (Level 2)**: Cainos - [https://cainos.itch.io/](https://cainos.itch.io/)
 
-In order to deploy your game, you will need to upload *all* of the contents of the `dist` folder to a public facing web server.
+---
 
-## Customizing the Template
+## 📜 Licença
 
-### Vite
-
-If you want to customize your build, such as adding plugin (i.e. for loading CSS or fonts), you can modify the `vite/config.*.mjs` file for cross-project changes, or you can modify and/or create new configuration files and target them in specific npm tasks inside of `package.json`. Please see the [Vite documentation](https://vitejs.dev/) for more information.
-
-## About log.js
-
-If you inspect our node scripts you will see there is a file called `log.js`. This file makes a single silent API call to a domain called `gryzor.co`. This domain is owned by Phaser Studio Inc. The domain name is a homage to one of our favorite retro games.
-
-We send the following 3 pieces of data to this API: The name of the template being used (vue, react, etc). If the build was 'dev' or 'prod' and finally the version of Phaser being used.
-
-At no point is any personal data collected or sent. We don't know about your project files, device, browser or anything else. Feel free to inspect the `log.js` file to confirm this.
-
-Why do we do this? Because being open source means we have no visible metrics about which of our templates are being used. We work hard to maintain a large and diverse set of templates for Phaser developers and this is our small anonymous way to determine if that work is actually paying off, or not. In short, it helps us ensure we're building the tools for you.
-
-However, if you don't want to send any data, you can use these commands instead:
-
-Dev:
-
-```bash
-npm run dev-nolog
-```
-
-Build:
-
-```bash
-npm run build-nolog
-```
-
-Or, to disable the log entirely, simply delete the file `log.js` and remove the call to it in the `scripts` section of `package.json`:
-
-Before:
-
-```json
-"scripts": {
-    "dev": "node log.js dev & dev-template-script",
-    "build": "node log.js build & build-template-script"
-},
-```
-
-After:
-
-```json
-"scripts": {
-    "dev": "dev-template-script",
-    "build": "build-template-script"
-},
-```
-
-Either of these will stop `log.js` from running. If you do decide to do this, please could you at least join our Discord and tell us which template you're using! Or send us a quick email. Either will be super-helpful, thank you.
-
-## Join the Phaser Community!
-
-We love to see what developers like you create with Phaser! It really motivates us to keep improving. So please join our community and show-off your work 😄
-
-**Visit:** The [Phaser website](https://phaser.io) and follow on [Phaser Twitter](https://twitter.com/phaser_)<br />
-**Play:** Some of the amazing games [#madewithphaser](https://twitter.com/search?q=%23madewithphaser&src=typed_query&f=live)<br />
-**Learn:** [API Docs](https://newdocs.phaser.io), [Support Forum](https://phaser.discourse.group/) and [StackOverflow](https://stackoverflow.com/questions/tagged/phaser-framework)<br />
-**Discord:** Join us on [Discord](https://discord.gg/phaser)<br />
-**Code:** 2000+ [Examples](https://labs.phaser.io)<br />
-**Read:** The [Phaser World](https://phaser.io/community/newsletter) Newsletter<br />
-
-Created by [Phaser Studio](mailto:support@phaser.io). Powered by coffee, anime, pixels and love.
-
-The Phaser logo and characters are &copy; 2011 - 2025 Phaser Studio Inc.
-
-All rights reserved.
+Este projeto é distribuído sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
