@@ -10,6 +10,7 @@ import { VictoryScene } from './scenes/VictoryScene';
 import { TutorialScene } from './scenes/TutorialScene';
 import { EducationScene } from './scenes/EducationScene';
 import { LevelTwoScene } from './scenes/LevelTwoScene';
+import { LevelThreeScene } from './scenes/LevelThreeScene';
 
 const config: Phaser.Types.Core.GameConfig = {
     type: AUTO,
@@ -35,6 +36,7 @@ const config: Phaser.Types.Core.GameConfig = {
         LevelSelectScene,
         LevelOneScene,
         LevelTwoScene,
+        LevelThreeScene,
         GameOverScene,
         UIScene,
         VictoryScene,

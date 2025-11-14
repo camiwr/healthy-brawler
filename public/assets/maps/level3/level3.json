@@ -162,7 +162,7 @@
                  "visible":true,
                  "width":0,
                  "x":71.5,
-                 "y":33.75
+                 "y":44.4166666666667
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -201,15 +201,15 @@
                 }, 
                 {
                  "height":0,
-                 "id":14,
+                 "id":55,
                  "name":"dropFruit",
                  "point":true,
                  "rotation":0,
                  "type":"dropFruit",
                  "visible":true,
                  "width":0,
-                 "x":953.333333333333,
-                 "y":72.6666666666667
+                 "x":951.333333333333,
+                 "y":101.333333333333
                 }, 
                 {
                  "height":0,
@@ -220,8 +220,8 @@
                  "type":"dropFruit",
                  "visible":true,
                  "width":0,
-                 "x":1558.33333333333,
-                 "y":243.666666666667
+                 "x":1557,
+                 "y":241.666666666667
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -243,8 +243,8 @@
                  "type":"enemy",
                  "visible":true,
                  "width":0,
-                 "x":238.666666666667,
-                 "y":246.666666666667
+                 "x":236.666666666667,
+                 "y":245.333333333333
                 }, 
                 {
                  "height":0,
@@ -255,7 +255,7 @@
                  "type":"enemy",
                  "visible":true,
                  "width":0,
-                 "x":486.5,
+                 "x":485.166666666667,
                  "y":239.833333333333
                 }, 
                 {
@@ -279,8 +279,8 @@
                  "type":"enemy",
                  "visible":true,
                  "width":0,
-                 "x":1186.66666666667,
-                 "y":77.6666666666667
+                 "x":1188.66666666667,
+                 "y":121
                 }, 
                 {
                  "height":0,
@@ -291,8 +291,8 @@
                  "type":"enemy",
                  "visible":true,
                  "width":0,
-                 "x":1707.33333333333,
-                 "y":243.833333333333
+                 "x":1702,
+                 "y":256.5
                 }, 
                 {
                  "height":0,
@@ -303,8 +303,8 @@
                  "type":"enemy",
                  "visible":true,
                  "width":0,
-                 "x":1381.33333333333,
-                 "y":240
+                 "x":1390,
+                 "y":243.333333333333
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -326,8 +326,8 @@
                  "type":"dropLixo",
                  "visible":true,
                  "width":0,
-                 "x":102.333333333333,
-                 "y":253
+                 "x":73,
+                 "y":255.666666666667
                 }, 
                 {
                  "height":0,
@@ -338,8 +338,20 @@
                  "type":"dropLixo",
                  "visible":true,
                  "width":0,
-                 "x":719.666666666667,
-                 "y":226.666666666667
+                 "x":716.333333333333,
+                 "y":214
+                }, 
+                {
+                 "height":0,
+                 "id":54,
+                 "name":"dropLixo",
+                 "point":true,
+                 "rotation":0,
+                 "type":"dropLixo",
+                 "visible":true,
+                 "width":0,
+                 "x":670.333333333333,
+                 "y":118
                 }, 
                 {
                  "height":0,
@@ -355,6 +367,18 @@
                 }, 
                 {
                  "height":0,
+                 "id":56,
+                 "name":"dropLixo",
+                 "point":true,
+                 "rotation":0,
+                 "type":"dropLixo",
+                 "visible":true,
+                 "width":0,
+                 "x":885,
+                 "y":55.3333333333333
+                }, 
+                {
+                 "height":0,
                  "id":38,
                  "name":"dropLixo",
                  "point":true,
@@ -363,7 +387,7 @@
                  "visible":true,
                  "width":0,
                  "x":1270.33333333333,
-                 "y":255.666666666667
+                 "y":259.666666666667
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -372,7 +396,7 @@
          "y":0
         }],
  "nextlayerid":12,
- "nextobjectid":54,
+ "nextobjectid":57,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

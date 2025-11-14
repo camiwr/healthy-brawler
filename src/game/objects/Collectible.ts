@@ -13,7 +13,9 @@ export class Collectible extends Physics.Arcade.Sprite {
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
-        this.anims.play(animKey, true);
+        if (animKey) {
+            this.anims.play(animKey, true);
+        }
 
         scene.tweens.add({
             targets: this,

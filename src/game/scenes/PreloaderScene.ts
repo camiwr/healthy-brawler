@@ -29,16 +29,22 @@ export class Preloader extends Scene {
         this.load.image('tomato', './fruits/tomato.png');
         this.load.image('lime', './fruits/lime.png');
 
+        // --- TILESETS E MAPAS ---
+        // Tilesets Nível 1
         this.load.image('tileset_terrain', 'images/tileset.png');
         this.load.image('tileset_objects', 'images/objects.png');
-        
+
+        // Tilesets Nível 2
         this.load.image('tileset_grass_l2', 'images/TX Tileset Grass.png');
         this.load.image('tileset_objects_l2', 'images/objects-new.png');
 
+        // Tilesets Nível 3
+        this.load.image('boat', 'images/boat.png');
+        this.load.image('tileset_att_objects', 'images/tileset_att.png');
 
         this.load.tilemapTiledJSON('map_level1', 'maps/level1/level1.json');
         this.load.tilemapTiledJSON('map_level2', 'maps/level2/level2.json');
-        // this.load.tilemapTiledJSON('map_level3', 'maps/level3/level3.json');
+        this.load.tilemapTiledJSON('map_level3', 'maps/level3/level3.json');
         this.load.spritesheet('player', 'images/Player.png', {
             frameWidth: 32,
             frameHeight: 32
@@ -92,6 +98,15 @@ export class Preloader extends Scene {
         this.load.spritesheet('collect_cherry', './animated/Cherries.png', fruitFrameSize);
         this.load.spritesheet('collect_orange', './animated/Orange.png', fruitFrameSize);
         this.load.spritesheet('collect_pineapple', './animated/Pineapple.png', fruitFrameSize);
+
+        // --- LIXO (NÃO SAUDÁVEIS) - IMAGENS ESTÁTICAS ---
+        this.load.image('lixo_pizza', './lixo/pizza.png');
+        this.load.image('lixo_hamburguer', './lixo/hamburguer.png');
+        this.load.image('lixo_coca', './lixo/coca.png');
+        this.load.image('lixo_batata', './lixo/fries.png');
+        this.load.image('lixo_icecream', './lixo/icecream.png'); 
+        this.load.image('lixo_donut', './lixo/donuts.png');
+        // --- FIM DOS NOVOS ITENS ---
 
         // Imagens para a cena educacional
         this.load.image('edu_1', 'images/edu_1.png');
