@@ -10,8 +10,8 @@ export class SplashScreen extends Scene {
         this.createGradientBackground();
 
         // 1. Frutinhas Flutuando
-        const fruitKeys = ['apple', 'banana', 'strawberry', 'grape', 'watermelon', 'pineapple', 'corn', 'lime'];
-        for (let i = 0; i < 20; i++) {
+        const fruitKeys = ['apple', 'banana', 'strawberry', 'grape', 'watermelon', 'pineapple', 'lime'];
+        for (let i = 0; i < 25; i++) {
             const x = Phaser.Math.Between(0, this.cameras.main.width);
             const y = Phaser.Math.Between(0, this.cameras.main.height);
             const key = Phaser.Utils.Array.GetRandom(fruitKeys);
@@ -21,11 +21,18 @@ export class SplashScreen extends Scene {
             const velocityY = Phaser.Math.Between(-30, 30);
 
             fruit.setVelocity(velocityX, velocityY);
+            // Faz a fruta girar no próprio eixo (velocidade angular aleatória)
+            const angularSpeed = Phaser.Math.Between(-120, 120); // negativo gira em sentido contrário
+            fruit.setAngularVelocity(angularSpeed);
+
             fruit.setCollideWorldBounds(true, 1, 1, true);
             fruit.setDepth(0);
 
             const randomSize = Phaser.Math.Between(65, 65);
             fruit.setDisplaySize(randomSize, randomSize);
+
+            // Deixa as frutas com 50% de opacidade
+            fruit.setAlpha(0.5);
         }
 
         // 2. Logo do Jogo

@@ -102,12 +102,8 @@ export class Player extends Physics.Arcade.Sprite {
         }
         this.anims.play(animKey);
 
-        // --- MUDANÇA PRINCIPAL AQUI ---
-        // Pega um projétil inativo do grupo que já temos
-        const projectile = this.projectiles.get(this.x, this.y) as Projectile;
-        // Não precisamos mais de:
-        // const projectilesGroup = (this.scene as LevelOneScene).getProjectilesGroup();
-
+        const projectile = this.projectiles.get(this.x, this.y) as Projectile;7
+        
         if (projectile) {
             projectile.setDisplaySize(24, 24); 
             projectile.fire(this.facingDirection);

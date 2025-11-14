@@ -28,13 +28,21 @@ export class LevelSelectScene extends Scene {
             { scene: 'LevelThreeScene', image: 'level_3_button' },
         ];
 
-        const positions = [
-            { x: 200, y: 300 },
-            { x: 400, y: 300 },
-            { x: 600, y: 300 },
-            { x: 800, y: 300 },
-        ];
-        
+        const count = levelData.length;
+        const centerX = this.cameras.main.width / 2;
+        const centerY = this.cameras.main.height / 2;
+
+        // espaçamento máximo entre botões, reduz em telas estreitas
+        const maxSpacing = 220;
+        const spacing = Math.min(maxSpacing, this.cameras.main.width / (count + 1));
+
+        const totalWidth = (count - 1) * spacing;
+        const startX = centerX - totalWidth / 2;
+
+        const positions: { x: number; y: number }[] = Array.from({ length: count }, (_, i) => ({
+            x: startX + i * spacing,
+            y: centerY
+        }));
         for (let i = 0; i < levelData.length; i++) {
             const pos = positions[i];
             const levelInfo = levelData[i];
@@ -64,8 +72,8 @@ export class LevelSelectScene extends Scene {
                         // FLUXO: TUTORIAL -> EDU -> JOGO
                         this.scene.start('TutorialScene', { 
                             origin: 'LevelSelect',
-                            nextScene: 'EducationScene', // Próxima cena é a Educação
-                            nextSceneData: eduData       // Passa os dados da Educação para o Tutorial
+                            nextScene: 'EducationScene', 
+                            nextSceneData: eduData       
                         });
                         
                     } else {
