@@ -18,16 +18,14 @@ export class LevelSelectScene extends Scene {
         // Mapeamento de dados das Cenas Educativas
         const educationDataMap: { [key: string]: { images: string[], nextScene: string } } = {
             'LevelOneScene': { images: ['edu_1', 'edu_2', 'edu_3'], nextScene: 'LevelOneScene' },
-            'LevelTwoScene': { images: ['edu_4'], nextScene: 'LevelTwoScene' },
-            'LevelThreeScene': { images: ['edu_5'], nextScene: 'LevelThreeScene' },
-            'LevelFourScene': { images: ['edu_6'], nextScene: 'LevelFourScene' } // (Adicionar 'edu_7' aqui)
+            'LevelTwoScene': { images: ['edu_4', 'edu_5'], nextScene: 'LevelTwoScene' },
+            'LevelThreeScene': { images: ['edu_6', 'edu_7'], nextScene: 'LevelThreeScene' },
         };
 
         const levelData = [
             { scene: 'LevelOneScene', image: 'level_1_button' },
             { scene: 'LevelTwoScene', image: 'level_2_button' },
             { scene: 'LevelThreeScene', image: 'level_3_button' },
-            { scene: 'LevelFourScene', image: 'level_lock_button' }, 
         ];
 
         const positions = [
@@ -71,10 +69,8 @@ export class LevelSelectScene extends Scene {
                         });
                         
                     } else {
-                        // FLUXO: EDU -> JOGO (padrão)
                         this.scene.start('EducationScene', eduData);
                     }
-                    // --- FIM DA LÓGICA ---
                 });
 
             } else {

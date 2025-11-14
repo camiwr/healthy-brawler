@@ -18,6 +18,7 @@ export class Preloader extends Scene {
         this.load.setPath('assets');
 
         this.load.image('logo_brawler', 'logo-healthy-brawler.png');
+
         this.load.image('apple', './fruits/apple.png');
         this.load.image('banana', './fruits/banana.png');
         this.load.image('carrot', './fruits/carrot.png');
@@ -26,11 +27,11 @@ export class Preloader extends Scene {
         this.load.image('strawberry', './fruits/strawberry.png');
         this.load.image('watermelon', './fruits/watermelon.png');
         this.load.image('tomato', './fruits/tomato.png');
-        this.load.image('corn', './fruits/corn.png');
         this.load.image('lime', './fruits/lime.png');
 
         this.load.image('tileset_terrain', 'images/tileset.png');
         this.load.image('tileset_objects', 'images/objects.png');
+        
         this.load.image('tileset_grass_l2', 'images/TX Tileset Grass.png');
         this.load.image('tileset_objects_l2', 'images/objects-new.png');
 

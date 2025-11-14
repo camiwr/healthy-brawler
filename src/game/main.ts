@@ -34,12 +34,12 @@ const config: Phaser.Types.Core.GameConfig = {
         SplashScreen,
         LevelSelectScene,
         LevelOneScene,
+        LevelTwoScene,
         GameOverScene,
         UIScene,
         VictoryScene,
         TutorialScene,
         EducationScene,
-        LevelTwoScene,
     ]
 };
 

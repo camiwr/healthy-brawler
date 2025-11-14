@@ -5,7 +5,6 @@ import { GameProgress } from '../utils/GameProgress';
 import { Projectile } from '../objects/Projectile';
 import { Collectible } from '../objects/Collectible';
 
-// 1. MUDAR O NOME DA CLASSE
 export class LevelTwoScene extends Scene {
     private player: Player;
     private slimes: Physics.Arcade.Group;
@@ -13,7 +12,6 @@ export class LevelTwoScene extends Scene {
     private collectibles: Physics.Arcade.Group;
     private map: Tilemaps.Tilemap;
 
-    // Lista de frutas (igual à Fase 1)
     private fruitList = [
         { texture: 'collect_apple', anim: 'apple-spin' },
         { texture: 'collect_banana', anim: 'banana-spin' },
@@ -27,17 +25,18 @@ export class LevelTwoScene extends Scene {
     }
 
     create() {
-        // --- 3. CARREGAR O MAPA 'map_level2' ---
+            console.log('Método update chamado');
+
+        // --- 1. CARREGAR MAPA E TILESETS DO NÍVEL 2 ---
         this.map = this.make.tilemap({ key: 'map_level2' });
 
-        // --- 4. CARREGAR OS TILESETS DA FASE 2 ---
-        // (Nomes vêm do Preloader)
+        // Nomes corretos dos tilesets como você especificou
         const grassTileset = this.map.addTilesetImage('TX Tileset Grass', 'tileset_grass_l2');
         const objectTileset = this.map.addTilesetImage('objects-new', 'tileset_objects_l2');
 
-        let wallsLayer;
+        let wallsLayer; // Será a camada 'wall'
 
-        // --- 5. CRIAR CAMADAS CONFORME A SUA INSTRUÇÃO ---
+        // --- 2. CRIAR LAYERS (Com os nomes corretos que você passou) ---
         
         // Camadas do 'TX Tileset Grass'
         if (grassTileset) {
@@ -52,16 +51,16 @@ export class LevelTwoScene extends Scene {
             this.map.createLayer('objects', objectTileset);
             this.map.createLayer('threes', objectTileset);
         }
-        // --- FIM DA CRIAÇÃO DE CAMADAS ---
         
+        // Definir colisão para a camada 'wall'
         if (wallsLayer) {
-            // 6. ATIVAR A COLISÃO (lendo a propriedade 'collider' do Tiled)
             wallsLayer.setCollisionByProperty({ collider: true });
         } else {
-            console.error("A camada 'wall' não foi carregada. Verifique o nome.");
+            console.error("Camada de colisão 'wall' não pôde ser criada.");
         }
 
-        // --- 7. CRIAR GRUPOS (Igual à Fase 1) ---
+
+        // --- 3. CRIAR GRUPO DE PROJÉTEIS ---
         this.projectiles = this.physics.add.group({
             classType: Projectile,
             runChildUpdate: true,
@@ -70,36 +69,48 @@ export class LevelTwoScene extends Scene {
             }
         });
 
+        // --- 4. CRIAR GRUPO DE COLETÁVEIS ---
         this.collectibles = this.physics.add.group({
             classType: Collectible,
             runChildUpdate: true 
         });
 
-        // --- 8. CRIAR PLAYER (Igual à Fase 1, lendo do 'level2.json') ---
+        // --- 5. CRIAR PLAYER (Refatoração aplicada) ---
         const playerSpawn = this.map.findObject('spawning point', obj => obj.name === 'spawning point');
         if (playerSpawn && typeof playerSpawn.x === 'number' && typeof playerSpawn.y === 'number') {
-            this.player = new Player(this, playerSpawn.x, playerSpawn.y);
+            this.player = new Player(this, playerSpawn.x, playerSpawn.y, this.projectiles);
         } else {
-            console.error("Ponto de spawn 'spawning point' não encontrado no Tiled map.");
-            this.player = new Player(this, 100, 100); // Posição de fallback
+            console.error("Ponto de spawn 'spawning point' do 'player' não encontrado no Tiled map.");
+            this.player = new Player(this, 100, 100, this.projectiles); 
         }
 
-        // --- 9. CRIAR SLIMES (Igual à Fase 1, lendo do 'level2.json') ---
+        // --- 6. CRIAR SLIMES ---
         this.slimes = this.physics.add.group({ classType: Slime, runChildUpdate: true });
         const enemysLayer = this.map.getObjectLayer('enemy');
+        // --- LOGS PARA DEPURAÇÃO ---
+        if (enemysLayer && enemysLayer.objects) {
+            console.log('Camada enemy encontrada:', enemysLayer.objects);
+        } else {
+            console.error('Camada enemy não encontrada ou sem objetos.');
+        }
+
         if (enemysLayer && enemysLayer.objects) {
             enemysLayer.objects.forEach(spawn => {
                 if (spawn.x && spawn.y) {
-                    this.slimes.add(new Slime(this, spawn.x, spawn.y, this.player));
+                    console.log(`Criando slime na posição: x=${spawn.x}, y=${spawn.y}`);
+                    const slime = new Slime(this, spawn.x, spawn.y, this.player);
+                    this.slimes.add(slime.setActive(true).setVisible(true));
                 }
             });
         }
+
+        console.log(`Slimes criados: ${this.slimes.getChildren().length}`);
         
-        // --- 10. CRIAR FRUTAS (Igual à Fase 1, lendo do 'level2.json') ---
+        // --- CRIAR AS FRUTAS DO MAPA ---
         const fruitLayer = this.map.getObjectLayer('dropFruit');
         if (fruitLayer && fruitLayer.objects) {
             fruitLayer.objects.forEach(fruitSpawn => {
-                if (fruitSpawn.type === 'fruit' && fruitSpawn.x && fruitSpawn.y) {
+                if (fruitSpawn.type === 'dropFruit' && fruitSpawn.x && fruitSpawn.y) {
                     const randomFruit = Phaser.Utils.Array.GetRandom(this.fruitList);
                     this.collectibles.add(
                         new Collectible(
@@ -115,30 +126,31 @@ export class LevelTwoScene extends Scene {
             });
         }
 
-        // --- 11. CÂMERA E FÍSICA (Igual à Fase 1) ---
+        // --- 8. CÂMERA E FÍSICA ---
         this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
         this.cameras.main.startFollow(this.player, true, 0.08, 0.08);
         this.cameras.main.setZoom(2.5);
 
-        // --- 12. ADICIONAR COLISÕES (Igual à Fase 1) ---
+        // --- 9. ADICIONAR COLISÕES ---
         if (wallsLayer) {
             this.physics.add.collider(this.player, wallsLayer);
             this.physics.add.collider(this.slimes, wallsLayer);
             this.physics.add.collider(this.projectiles, wallsLayer, this.handleProjectileHitWall, undefined, this);
         }
+
         this.physics.add.collider(this.player, this.slimes, this.handlePlayerHitSlime, undefined, this);
         this.physics.add.overlap(this.projectiles, this.slimes, this.handleProjectileHitSlime, undefined, this);
         this.physics.add.overlap(this.player, this.collectibles, this.handleCollectItem, undefined, this);
 
-        // --- 13. UI (Igual à Fase 1) ---
+        // --- 10. UI ---
         this.scene.launch('UIScene', { parentSceneKey: this.scene.key });
         this.scene.bringToTop('UIScene');
     }
 
-    // --- MÉTODOS DE COLISÃO (CÓPIA DA FASE 1) ---
+    // --- MÉTODOS DE COLISÃO ---
 
-    private handleProjectileHitWall(object1: any, object2: any) {
+    private handleProjectileHitWall(object1: any, _object2: any) {
         const proj = object1 as Projectile;
         if (proj && typeof proj.hit === 'function') {
             proj.hit();
@@ -173,43 +185,45 @@ export class LevelTwoScene extends Scene {
         if (itemType === 'HEALTH') {
             playerObj.gainHealth(1);
         }
+        collectible.destroy();
     }
-    // --- FIM DOS MÉTODOS DE COLISÃO ---
-
-
-    // --- GETTERS (CÓPIA DA FASE 1) ---
-    public getProjectilesGroup(): Phaser.Physics.Arcade.Group {
-        return this.projectiles;
-    }
+    
+    // --- GETTERS ---
+    
     public getSlimesGroup(): Phaser.Physics.Arcade.Group {
         return this.slimes;
     }
 
-    // --- UPDATE (CÓPIA DA FASE 1) ---
-    update() {
-        if (this.player && this.player.active) { 
-            this.player.update();
-        }
-
-        if (this.slimes.countActive(true) === 0) {
-            this.winLevel();
-        }
+    // --- UPDATE & WIN ---
+update() {
+    if (this.player && this.player.active) { 
+        this.player.update();
     }
 
-    // --- 14. MÉTODO WIN (AJUSTADO PARA A FASE 2) ---
-    private winLevel(): void {
-        if (this.scene.isActive()) { 
-            console.log('Fase 2 Vencida!');
-            
-            this.scene.stop('UIScene');
-            GameProgress.unlockNextLevel(2); // <-- MUDAR NÍVEL PARA 2
-            
-            this.scene.pause(); 
-            
-            this.scene.launch('VictoryScene', { 
-                parentSceneKey: this.scene.key, 
-                nextSceneKey: 'LevelThreeScene'  // <-- MUDAR PARA A PRÓXIMA FASE
-            });
-        }
+    if (this.slimes.getChildren().length > 0 && this.slimes.countActive(true) === 0) {
+        this.winLevel();
     }
+}
+
+private winLevel(): void {
+    console.log('Método winLevel chamado. Verificando condições para desbloquear próximo nível.');
+
+    if (this.scene.isActive()) {
+        console.log('Fase 2 Vencida!');
+
+        this.scene.stop('UIScene');
+        GameProgress.unlockNextLevel(2);
+
+        this.scene.pause();
+
+        console.log('Lançando VictoryScene...');
+        this.scene.launch('VictoryScene', {
+            parentSceneKey: this.scene.key,
+            nextSceneKey: 'LevelThreeScene'
+        });
+
+        // Garantir que a VictoryScene fique no topo
+        this.scene.bringToTop('VictoryScene');
+    }
+}
 }

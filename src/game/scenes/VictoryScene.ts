@@ -51,14 +51,14 @@ export class VictoryScene extends Scene {
     }
 
     private stopParentAndStartNext() {
-        this.scene.stop(this.parentSceneKey); // Para a LevelOneScene (que estava pausada)
-        this.scene.stop();                   // Para esta cena (VictoryScene)
-        this.scene.start(this.nextSceneKey); // Inicia a LevelTwoScene
+        this.scene.stop(this.parentSceneKey); 
+        this.scene.stop();                   
+        this.scene.start(this.nextSceneKey); 
     }
 
     private stopParentAndGoToMenu() {
-        this.scene.stop(this.parentSceneKey); // Para a LevelOneScene
-        this.scene.stop();                   // Para esta cena (VictoryScene)
-        this.scene.start('LevelSelectScene'); // Volta ao menu
+        this.scene.stop(this.parentSceneKey); 
+        this.scene.stop();                   
+        this.scene.start('LevelSelectScene'); 
     }
 }

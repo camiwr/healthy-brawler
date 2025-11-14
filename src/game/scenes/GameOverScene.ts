@@ -12,57 +12,53 @@ export class GameOverScene extends Scene {
     }
 
     create() {
-        // --- FUNDO SEMI-TRANSPARENTE (EFEITO MODAL) ---
-        const bg = this.add.graphics();
-        bg.fillStyle(0x000000, 0.7); // Cor preta, 70% de opacidade
-        bg.fillRect(0, 0, this.cameras.main.width, this.cameras.main.height);
+        this.cameras.main.setBackgroundColor('rgba(0, 0, 0, 0.7)');
+        const { width, height } = this.scale;
 
-        // --- GRÁFICO DE GAME OVER ---
-        this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2 - 100, 'game_over')
+        this.add.image(width / 2, height / 2 - 50, 'game_over')
             .setOrigin(0.5)
-            .setScale(1.2); 
+            .setScale(0.8);
 
-        // --- TEXTO "TENTAR NOVAMENTE?" ---
-        this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2 - 40, 'tryagain')
+        const tryAgainButton = this.add.image(width / 2, height / 2 + 50, 'tryagain')
             .setOrigin(0.5)
-            .setScale(0.5); 
+            .setInteractive()
+            .setScale(0.6);
 
-        // --- BOTÃO "SIM" ---
-        const yesButton = this.add.image(this.cameras.main.width / 2 - 50, this.cameras.main.height / 2 + 60, 'yes_button')
-            .setInteractive({ useHandCursor: true })
-            .setScale(0.3); // Ajuste o tamanho
-
-        yesButton.on('pointerdown', () => {
-            this.restartLevel();
+        // --- CORREÇÃO APLICADA AQUI ---
+        tryAgainButton.on('pointerdown', () => {
+            if (this.parentSceneKey) {
+                // 1. Para a UIScene
+                this.scene.stop('UIScene'); 
+                
+                // 2. Inicia a cena do jogo (ex: 'LevelOneScene')
+                // A função start() AUTOMATICAMENTE para a cena atual (GameOverScene)
+                // e inicia a cena passada pela key (string).
+                this.scene.start(this.parentSceneKey); // <-- LINHA CORRIGIDA
+                
+            } else {
+                // Fallback caso 'parentSceneKey' não seja passada
+                console.error('parentSceneKey não definida na GameOverScene.');
+                this.scene.stop('UIScene');
+                this.scene.start('LevelSelectScene'); 
+                this.scene.stop();
+            }
         });
+        // --- FIM DA CORREÇÃO ---
 
-        // --- BOTÃO "NÃO" ---
-        const noButton = this.add.image(this.cameras.main.width / 2 + 50, this.cameras.main.height / 2 + 60, 'no_button')
-            .setInteractive({ useHandCursor: true })
-            .setScale(0.3); // Ajuste o tamanho
+        // Botão de voltar ao menu (lógica original mantida)
+        const menuButton = this.add.image(width / 2, height / 2 + 120, 'menu_button')
+            .setOrigin(0.5)
+            .setInteractive()
+            .setScale(0.5);
 
-        noButton.on('pointerdown', () => {
-            this.goToMenu();
+        menuButton.on('pointerdown', () => {
+            this.scene.stop('UIScene');
+            // Garante que a cena do jogo (que está pausada) seja parada também
+            if (this.parentSceneKey) {
+                this.scene.stop(this.parentSceneKey); 
+            }
+            this.scene.start('LevelSelectScene'); // Ou 'MainMenuScene'
+            this.scene.stop();
         });
-        
-        // --- Efeitos de Hover (opcional, mas recomendado) ---
-        [yesButton, noButton].forEach(button => {
-            button.on('pointerover', () => button.setTint(0xDDDDDD));
-            button.on('pointerout', () => button.clearTint());
-            button.on('pointerup', () => button.clearTint()); 
-        });
-    }
-
-    private restartLevel() {
-        this.scene.stop('UIScene');
-        this.scene.stop(this.parentSceneKey);
-        this.scene.start(this.parentSceneKey);
-        this.scene.stop();
-    }
-
-    private goToMenu() {
-        this.scene.stop(this.parentSceneKey); // Para a cena pai
-        this.scene.stop();                   // Para esta cena (GameOverScene)
-        this.scene.start('LevelSelectScene'); // Volta ao menu
     }
 }

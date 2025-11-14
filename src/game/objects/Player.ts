@@ -1,6 +1,6 @@
 import { Scene, Physics } from 'phaser';
 import { Slime } from './Slime';
-import { Projectile } from './Projectile'; // <-- 1. IMPORTAR PROJÉTIL
+import { Projectile } from './Projectile';
 
 // O 'enum' Direction agora será usado pelo Projectile também
 export enum Direction { UP, DOWN, LEFT, RIGHT }
@@ -15,9 +15,14 @@ export class Player extends Physics.Arcade.Sprite {
     private isAttacking: boolean = false;
     private facingDirection: Direction = Direction.DOWN; 
 
-    constructor(scene: Scene, x: number, y: number) {
+    // --- 1. Adicionada a propriedade para guardar os projéteis ---
+    private projectiles: Phaser.Physics.Arcade.Group;
+
+    // --- 2. Construtor modificado para receber o grupo de projéteis ---
+    constructor(scene: Scene, x: number, y: number, projectiles: Phaser.Physics.Arcade.Group) {
         super(scene, x, y, 'player');
         
+        this.projectiles = projectiles; // <-- Armazena o grupo
         this.health = this.maxHealth; // Define a vida inicial
 
         scene.add.existing(this);
@@ -42,6 +47,8 @@ export class Player extends Physics.Arcade.Sprite {
         if (this.health <= 0) {
             this.active = false;
             this.setVelocity(0);
+            
+            // // Sugestão 3 (animação de morte) que discutimos antes:
             // this.anims.play('player-die');
             // this.once('animationcomplete', () => {
                 this.scene.scene.pause(this.scene.scene.key); // Pausa a cena atual
@@ -57,7 +64,6 @@ export class Player extends Physics.Arcade.Sprite {
         }
     }
     
-    // --- 2. NOVO MÉTODO: gainHealth ---
     public gainHealth(amount: number): void {
         if (!this.active) return;
         this.health += amount;
@@ -68,7 +74,6 @@ export class Player extends Physics.Arcade.Sprite {
 
         this.scene.events.emit('playerHealthChanged', this.health);
         
-        // Feedback de cura (pisca em verde)
         this.scene.tweens.add({ 
             targets: this, 
             alpha: 0.5, 
@@ -81,9 +86,8 @@ export class Player extends Physics.Arcade.Sprite {
             }
         });
     }
-    // --- FIM DO NOVO MÉTODO ---
     
-    // --- 3. LÓGICA DE ATAQUE COM PROJÉTIL (SUBSTITUÍDA) ---
+    // --- 3. LÓGICA DE ATAQUE MODIFICADA (Simplificada) ---
     private attack(): void {
         if (this.isAttacking) return; 
         this.isAttacking = true;
@@ -98,20 +102,17 @@ export class Player extends Physics.Arcade.Sprite {
         }
         this.anims.play(animKey);
 
-        // Pega o grupo de projéteis da cena
-        const projectilesGroup = (this.scene as LevelOneScene).getProjectilesGroup();
-        
-        // Pede um projétil inativo do grupo (não precisa passar textura)
-        const projectile = projectilesGroup.get(this.x, this.y) as Projectile;
+        // --- MUDANÇA PRINCIPAL AQUI ---
+        // Pega um projétil inativo do grupo que já temos
+        const projectile = this.projectiles.get(this.x, this.y) as Projectile;
+        // Não precisamos mais de:
+        // const projectilesGroup = (this.scene as LevelOneScene).getProjectilesGroup();
 
         if (projectile) {
-            // Ajusta o tamanho do projétil (opcional, ajuste o valor)
             projectile.setDisplaySize(24, 24); 
-            // Ativa o projétil e o dispara na direção correta
             projectile.fire(this.facingDirection);
         }
 
-        // Espera a animação de ataque terminar
         this.once('animationcomplete', () => {
             this.isAttacking = false;
         });
@@ -137,7 +138,7 @@ export class Player extends Physics.Arcade.Sprite {
             this.facingDirection = Direction.UP;
         } else if (this.cursors.down.isDown) {
             this.setVelocityY(speed);
-            this.facingDirection = Direction.DOWN;
+            this.facingDirection = Direction.RIGHT;
         }
 
         if (this.body && this.body.velocity.x === 0 && this.body.velocity.y === 0) {
@@ -161,6 +162,3 @@ export class Player extends Physics.Arcade.Sprite {
         }
     }
 }
-
-// Adiciona a referência para a cena para o TypeScript não reclamar
-type LevelOneScene = import('../scenes/LevelOneScene').LevelOneScene;

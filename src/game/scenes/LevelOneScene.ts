@@ -1,4 +1,4 @@
-import { Scene, Physics, Tilemaps } from 'phaser'; // <-- Importe o 'Tilemaps'
+import { Scene, Physics, Tilemaps } from 'phaser';
 import { Player } from '../objects/Player';
 import { Slime } from '../objects/Slime';
 import { GameProgress } from '../utils/GameProgress';
@@ -12,7 +12,6 @@ export class LevelOneScene extends Scene {
     private collectibles: Physics.Arcade.Group;
     private map: Tilemaps.Tilemap;
 
-    // Lista de frutas que podemos "dropar"
     private fruitList = [
         { texture: 'collect_apple', anim: 'apple-spin' },
         { texture: 'collect_banana', anim: 'banana-spin' },
@@ -64,13 +63,15 @@ export class LevelOneScene extends Scene {
             runChildUpdate: true 
         });
 
-        // --- CRIAR PLAYER ---
+        // --- CRIAR PLAYER--
         const playerSpawn = this.map.findObject('player', obj => obj.name === 'spawning point');
         if (playerSpawn && typeof playerSpawn.x === 'number' && typeof playerSpawn.y === 'number') {
-            this.player = new Player(this, playerSpawn.x, playerSpawn.y);
+            // --- 1. Passando o grupo de projéteis para o construtor ---
+            this.player = new Player(this, playerSpawn.x, playerSpawn.y, this.projectiles);
         } else {
             console.error("Ponto de spawn 'spawning point' do 'player' não encontrado no Tiled map.");
-            this.player = new Player(this, 100, 100); // Posição de fallback
+            // --- 1. Passando o grupo de projéteis para o construtor (fallback) ---
+            this.player = new Player(this, 100, 100, this.projectiles); 
         }
 
         // --- CRIAR SLIMES ---
@@ -114,15 +115,11 @@ export class LevelOneScene extends Scene {
         if (wallsLayer) {
             this.physics.add.collider(this.player, wallsLayer);
             this.physics.add.collider(this.slimes, wallsLayer);
-            
-            // CORREÇÃO: A linha abaixo agora usa a função correta
             this.physics.add.collider(this.projectiles, wallsLayer, this.handleProjectileHitWall, undefined, this);
         }
 
         this.physics.add.collider(this.player, this.slimes, this.handlePlayerHitSlime, undefined, this);
-        
         this.physics.add.overlap(this.projectiles, this.slimes, this.handleProjectileHitSlime, undefined, this);
-        
         this.physics.add.overlap(this.player, this.collectibles, this.handleCollectItem, undefined, this);
 
         // --- UI ---
@@ -130,9 +127,9 @@ export class LevelOneScene extends Scene {
         this.scene.bringToTop('UIScene');
     }
 
-    // --- MÉTODOS DE COLISÃO (COM TIPOS CORRIGIDOS) ---
+    // --- MÉTODOS DE COLISÃO ---
 
-    private handleProjectileHitWall(object1: any, object2: any) {
+    private handleProjectileHitWall(object1: any, _object2: any) {
         const proj = object1 as Projectile;
         if (proj && typeof proj.hit === 'function') {
             proj.hit();
@@ -141,7 +138,7 @@ export class LevelOneScene extends Scene {
 
     private handlePlayerHitSlime(
         player: Phaser.Types.Physics.Arcade.GameObjectWithBody | Phaser.Physics.Arcade.Body | Phaser.Physics.Arcade.StaticBody | Tilemaps.Tile, 
-        slime: Phaser.Types.Physics.Arcade.GameObjectWithBody | Phaser.Physics.Arcade.Body | Phaser.Physics.Arcade.StaticBody | Tilemaps.Tile
+        _slime: Phaser.Types.Physics.Arcade.GameObjectWithBody | Phaser.Physics.Arcade.Body | Phaser.Physics.Arcade.StaticBody | Tilemaps.Tile
     ) {
         (player as Player).takeDamage(1);
     }
@@ -165,16 +162,13 @@ export class LevelOneScene extends Scene {
         const itemType = collectible.collect();
         
         if (itemType === 'HEALTH') {
-            playerObj.gainHealth(1); // Cura 1 coração
+            playerObj.gainHealth(1);
         }
-    }
-    // --- FIM DOS MÉTODOS DE COLISÃO ---
 
-
-    // --- GETTERS ---
-    public getProjectilesGroup(): Phaser.Physics.Arcade.Group {
-        return this.projectiles;
+        collectible.destroy();
     }
+    
+    // Este método ainda pode ser útil se a UIScene ou outra cena precisar dele
     public getSlimesGroup(): Phaser.Physics.Arcade.Group {
         return this.slimes;
     }
@@ -205,76 +199,5 @@ export class LevelOneScene extends Scene {
                 nextSceneKey: 'LevelTwoScene'  
             });
         }
-    }
-
-    public resetLevel(): void {
-        // Destruir grupos existentes
-        this.projectiles.destroy(true);
-        this.collectibles.destroy
-        if (this.player) {
-            this.player.destroy();
-        }
-
-        // Recriar grupos
-        this.projectiles = this.physics.add.group({
-            classType: Projectile,
-            runChildUpdate: true,
-            createCallback: (proj) => {
-                (proj as Projectile).setActive(false).setVisible(false);
-            }
-        });
-
-        this.collectibles = this.physics.add.group({
-            classType: Collectible,
-            runChildUpdate: true 
-        });
-
-        // Recriar player
-        const playerSpawn = this.map.findObject('player', obj => obj.name === 'spawning point');
-        if (playerSpawn && typeof playerSpawn.x === 'number' && typeof playerSpawn.y === 'number') {
-            this.player = new Player(this, playerSpawn.x, playerSpawn.y);
-        } else {
-            this.player = new Player(this, 100, 100);
-        }
-
-        // Recriar slimes
-        this.slimes = this.physics.add.group({ classType: Slime, runChildUpdate: true });
-        const enemysLayer = this.map.getObjectLayer('enemys');
-        if (enemysLayer && enemysLayer.objects) {
-            enemysLayer.objects.forEach(spawn => {
-                if (spawn.x && spawn.y) {
-                    this.slimes.add(new Slime(this, spawn.x, spawn.y, this.player));
-                }
-            });
-        }
-
-        // Recriar frutas
-        const fruitLayer = this.map.getObjectLayer('dropFruit');
-        if (fruitLayer && fruitLayer.objects) {
-            fruitLayer.objects.forEach(fruitSpawn => {
-                if (fruitSpawn.type === 'fruit' && fruitSpawn.x && fruitSpawn.y) {
-                    const randomFruit = Phaser.Utils.Array.GetRandom(this.fruitList);
-                    this.collectibles.add(
-                        new Collectible(
-                            this, 
-                            fruitSpawn.x, 
-                            fruitSpawn.y, 
-                            randomFruit.texture, 
-                            randomFruit.anim, 
-                            'HEALTH'
-                        )
-                    );
-                }
-            });
-        }
-
-        // Recriar colisões (assumindo wallsLayer ainda existe, mas como layers são criados uma vez, talvez não precise recriar)
-        // Para simplificar, assumimos que layers estão ok.
-
-        // Reiniciar câmera
-        this.cameras.main.startFollow(this.player, true, 0.08, 0.08);
-
-        // Reiniciar UI
-        this.scene.launch('UIScene');
     }
 }
