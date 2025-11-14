@@ -11,6 +11,7 @@ export class LevelOneScene extends Scene {
     private projectiles: Physics.Arcade.Group;
     private collectibles: Physics.Arcade.Group;
     private map: Tilemaps.Tilemap;
+    private lixos: Physics.Arcade.Group;
 
     private fruitList = [
         { texture: 'collect_apple', anim: 'apple-spin' },
@@ -19,6 +20,16 @@ export class LevelOneScene extends Scene {
         { texture: 'collect_orange', anim: 'orange-spin' },
         { texture: 'collect_pineapple', anim: 'pineapple-spin' },
     ];
+
+    private lixoList = [
+        { texture: 'lixo_pizza', anim: null },
+        { texture: 'lixo_hamburguer', anim: null },
+        { texture: 'lixo_batata', anim: null },
+        { texture: 'lixo_coca', anim: null },
+        { texture: 'lixo_donut', anim: null }
+    ];
+
+
 
     constructor() {
         super('LevelOneScene');
@@ -60,7 +71,13 @@ export class LevelOneScene extends Scene {
         // --- CRIAR GRUPO DE COLETÁVEIS ---
         this.collectibles = this.physics.add.group({
             classType: Collectible,
-            runChildUpdate: true 
+            runChildUpdate: true
+        });
+
+        // --- CRIAR GRUPO DE LIXOS ---
+        this.lixos = this.physics.add.group({
+            classType: Collectible,
+            runChildUpdate: true
         });
 
         // --- CRIAR PLAYER--
@@ -71,7 +88,7 @@ export class LevelOneScene extends Scene {
         } else {
             console.error("Ponto de spawn 'spawning point' do 'player' não encontrado no Tiled map.");
             // --- 1. Passando o grupo de projéteis para o construtor (fallback) ---
-            this.player = new Player(this, 100, 100, this.projectiles); 
+            this.player = new Player(this, 100, 100, this.projectiles);
         }
 
         // --- CRIAR SLIMES ---
@@ -84,7 +101,7 @@ export class LevelOneScene extends Scene {
                 }
             });
         }
-        
+
         // --- CRIAR AS FRUTAS DO MAPA ---
         const fruitLayer = this.map.getObjectLayer('dropFruit');
         if (fruitLayer && fruitLayer.objects) {
@@ -93,14 +110,40 @@ export class LevelOneScene extends Scene {
                     const randomFruit = Phaser.Utils.Array.GetRandom(this.fruitList);
                     this.collectibles.add(
                         new Collectible(
-                            this, 
-                            fruitSpawn.x, 
-                            fruitSpawn.y, 
-                            randomFruit.texture, 
-                            randomFruit.anim, 
-                            'HEALTH' 
+                            this,
+                            fruitSpawn.x,
+                            fruitSpawn.y,
+                            randomFruit.texture,
+                            randomFruit.anim,
+                            'HEALTH'
                         )
                     );
+                }
+            });
+        }
+
+        // --- CRIAR OS LIXOS DO MAPA 
+        const lixoLayer = this.map.getObjectLayer('dropLixo');
+        if (lixoLayer && lixoLayer.objects) {
+            lixoLayer.objects.forEach(lixoSpawn => {
+                if (lixoSpawn.type === 'dropLixo' && lixoSpawn.x && lixoSpawn.y) {
+                    // Pega um item de lixo aleatório da lista
+                    const randomLixo = Phaser.Utils.Array.GetRandom(this.lixoList);
+
+                    // Cria a instância do lixo primeiro (evita converter o retorno do grupo)
+                    const lixoItem = new Collectible(
+                        this,
+                        lixoSpawn.x,
+                        lixoSpawn.y,
+                        randomLixo.texture,            // Textura aleatória
+                        randomLixo.anim ?? '',         // Usa string vazia se for null
+                        'LIXO'                         // Tipo
+                    );
+
+                    // Adiciona a instância ao grupo
+                    this.lixos.add(lixoItem);
+
+                    lixoItem.setDisplaySize(16, 16);
                 }
             });
         }
@@ -122,6 +165,8 @@ export class LevelOneScene extends Scene {
         this.physics.add.overlap(this.projectiles, this.slimes, this.handleProjectileHitSlime, undefined, this);
         this.physics.add.overlap(this.player, this.collectibles, this.handleCollectItem, undefined, this);
 
+        this.physics.add.overlap(this.player, this.lixos, this.handleCollectLixo, undefined, this);
+
         // --- UI ---
         this.scene.launch('UIScene', { parentSceneKey: this.scene.key });
         this.scene.bringToTop('UIScene');
@@ -137,14 +182,14 @@ export class LevelOneScene extends Scene {
     }
 
     private handlePlayerHitSlime(
-        player: Phaser.Types.Physics.Arcade.GameObjectWithBody | Phaser.Physics.Arcade.Body | Phaser.Physics.Arcade.StaticBody | Tilemaps.Tile, 
+        player: Phaser.Types.Physics.Arcade.GameObjectWithBody | Phaser.Physics.Arcade.Body | Phaser.Physics.Arcade.StaticBody | Tilemaps.Tile,
         _slime: Phaser.Types.Physics.Arcade.GameObjectWithBody | Phaser.Physics.Arcade.Body | Phaser.Physics.Arcade.StaticBody | Tilemaps.Tile
     ) {
         (player as Player).takeDamage(1);
     }
 
     private handleProjectileHitSlime(
-        proj: Phaser.Types.Physics.Arcade.GameObjectWithBody | Phaser.Physics.Arcade.Body | Phaser.Physics.Arcade.StaticBody | Tilemaps.Tile, 
+        proj: Phaser.Types.Physics.Arcade.GameObjectWithBody | Phaser.Physics.Arcade.Body | Phaser.Physics.Arcade.StaticBody | Tilemaps.Tile,
         slime: Phaser.Types.Physics.Arcade.GameObjectWithBody | Phaser.Physics.Arcade.Body | Phaser.Physics.Arcade.StaticBody | Tilemaps.Tile
     ) {
         if ((slime as Slime).active) {
@@ -152,22 +197,33 @@ export class LevelOneScene extends Scene {
             (slime as Slime).takeDamage(1);
         }
     }
-    
+
     private handleCollectItem(
-        player: Phaser.Types.Physics.Arcade.GameObjectWithBody | Phaser.Physics.Arcade.Body | Phaser.Physics.Arcade.StaticBody | Tilemaps.Tile, 
+        player: Phaser.Types.Physics.Arcade.GameObjectWithBody | Phaser.Physics.Arcade.Body | Phaser.Physics.Arcade.StaticBody | Tilemaps.Tile,
         item: Phaser.Types.Physics.Arcade.GameObjectWithBody | Phaser.Physics.Arcade.Body | Phaser.Physics.Arcade.StaticBody | Tilemaps.Tile
     ) {
         const collectible = item as Collectible;
         const playerObj = player as Player;
         const itemType = collectible.collect();
-        
+
         if (itemType === 'HEALTH') {
             playerObj.gainHealth(1);
         }
 
         collectible.destroy();
     }
-    
+
+    private handleCollectLixo(player: any, item: any) {
+        const collectible = item as Collectible;
+        const playerObj = player as Player;
+        if (collectible.collect() === 'LIXO') {
+            playerObj.takeDamage(1);
+        }
+        collectible.destroy();
+    }
+
+
+
     // Este método ainda pode ser útil se a UIScene ou outra cena precisar dele
     public getSlimesGroup(): Phaser.Physics.Arcade.Group {
         return this.slimes;
@@ -175,7 +231,7 @@ export class LevelOneScene extends Scene {
 
     // --- UPDATE & WIN ---
     update() {
-        if (this.player && this.player.active) { 
+        if (this.player && this.player.active) {
             this.player.update();
         }
 
@@ -186,17 +242,17 @@ export class LevelOneScene extends Scene {
 
     private winLevel(): void {
         console.log('Método winLevel chamado. Verificando condições para desbloquear próximo nível.');
-        if (this.scene.isActive()) { 
+        if (this.scene.isActive()) {
             console.log('Fase 1 Vencida!');
-            
+
             this.scene.stop('UIScene');
-            GameProgress.unlockNextLevel(1); 
-            
-            this.scene.pause(); 
-            
-            this.scene.launch('VictoryScene', { 
-                parentSceneKey: this.scene.key, 
-                nextSceneKey: 'LevelTwoScene'  
+            GameProgress.unlockNextLevel(1);
+
+            this.scene.pause();
+
+            this.scene.launch('VictoryScene', {
+                parentSceneKey: this.scene.key,
+                nextSceneKey: 'LevelTwoScene'
             });
         }
     }
