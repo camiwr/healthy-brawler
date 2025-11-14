@@ -1,4 +1,5 @@
 const PROGRESS_KEY = 'healthyBrawler_progress';
+const TUTORIAL_KEY = 'healthyBrawler_tutorialSeen'; // <-- ADICIONAR
 
 export class GameProgress {
     // Carrega o nível mais alto desbloqueado
@@ -21,5 +22,21 @@ export class GameProgress {
             localStorage.setItem(PROGRESS_KEY, nextLevel.toString());
             console.log(`Nível ${nextLevel} desbloqueado!`);
         }
+    }
+
+    // --- ADICIONAR NOVAS FUNÇÕES ABAIXO ---
+    
+    /**
+     * Verifica se o tutorial já foi visto
+     */
+    public static getTutorialSeen(): boolean {
+        return localStorage.getItem(TUTORIAL_KEY) === 'true';
+    }
+
+    /**
+     * Marca o tutorial como visto
+     */
+    public static setTutorialSeen(): void {
+        localStorage.setItem(TUTORIAL_KEY, 'true');
     }
 }

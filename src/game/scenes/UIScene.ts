@@ -14,13 +14,10 @@ export class UIScene extends Scene {
     }
 
     init(data: { parentSceneKey: string }) {
-        console.log('UIScene init chamado com', data);
-        // Armazena a referência da cena pai (ex: LevelOneScene, LevelTwoScene, etc.)
         this.parentScene = this.scene.get(data.parentSceneKey);
     }
 
     create() {
-        console.log('UIScene create chamado');
         // --- MOSTRADOR DE VIDA (CORAÇÕES) ---
         this.drawHearts(this.maxHealth);
         this.parentScene.events.on('playerHealthChanged', this.updateHearts, this);
@@ -29,53 +26,60 @@ export class UIScene extends Scene {
         // --- BOTÃO DE PAUSAR (CANTO DA TELA) ---
         this.pauseButton = this.add.image(this.cameras.main.width - 50, 40, 'pause_button')
             .setInteractive({ useHandCursor: true })
-            .setScale(0.2)
+            .setScale(0.2);
 
 
         // --- CRIAÇÃO DO MODAL DE PAUSA (COMEÇA ESCONDIDO) ---
         
-        // 1. Cria o Container
         this.pauseModal = this.add.container(this.cameras.main.width / 2, this.cameras.main.height / 2);
         this.pauseModal.setDepth(100);
         this.pauseModal.setVisible(false);
 
-        // 2. Adiciona sua imagem "box.png" como fundo
         const modalBackground = this.add.image(0, 0, 'pause_modal_bg');
         modalBackground.setScale(1); 
         this.pauseModal.add(modalBackground);
 
-        // 3. Adiciona os botões "Continuar" e "Menu" DENTRO do modal
-        const resumeButton = this.add.image(0, -30, 'resume_button')
+        // --- Posições dos Botões (AJUSTADAS) ---
+        const resumeButton = this.add.image(0, -50, 'resume_button')
             .setInteractive({ useHandCursor: true })
             .setScale(0.5);
 
-        const menuButton = this.add.image(0, 45, 'menu_button') 
+        // NOVO BOTÃO "TUTORIAL"
+        const tutorialButton = this.add.image(0, 30, 'tutorial_button')
+            .setInteractive({ useHandCursor: true })
+            .setScale(0.5);
+
+        const menuButton = this.add.image(0, 110, 'menu_button')
             .setInteractive({ useHandCursor: true })
             .setScale(0.5); 
 
         this.pauseModal.add(resumeButton);
+        this.pauseModal.add(tutorialButton); // <-- ADICIONADO
         this.pauseModal.add(menuButton);
 
 
         // --- LÓGICA DE EVENTOS ---
 
-        // CLICAR NO BOTÃO "PAUSAR" (CANTO DA TELA)
         this.pauseButton.on('pointerdown', () => {
             this.isPaused = true;
             this.parentScene.scene.pause();
-            this.pauseButton.setVisible(false);
-            this.pauseModal.setVisible(true); 
+            this.showPauseModal(); // <-- USANDO A NOVA FUNÇÃO
         });
 
-        // CLICAR NO BOTÃO "CONTINUAR" (DENTRO DO MODAL)
         resumeButton.on('pointerdown', () => {
             this.isPaused = false;
             this.parentScene.scene.resume();
             this.pauseModal.setVisible(false);
             this.pauseButton.setVisible(true);
         });
+        
+        // --- LÓGICA DO NOVO BOTÃO ---
+        tutorialButton.on('pointerdown', () => {
+            this.pauseModal.setVisible(false); // Esconde o modal de pausa
+            this.scene.launch('TutorialScene', { origin: 'UIScene' });
+        });
+        // --- FIM DA LÓGICA ---
 
-        // CLICAR NO BOTÃO "MENU" (DENTRO DO MODAL)
         menuButton.on('pointerdown', () => {
             this.isPaused = false;
             this.parentScene.scene.resume();
@@ -85,18 +89,24 @@ export class UIScene extends Scene {
         });
     }
 
-    private drawHearts(initialHealth: number): void {
-        console.log('Desenhando corações com saúde inicial:', initialHealth);
+    // --- ADICIONAR NOVA FUNÇÃO PÚBLICA ---
+    /**
+     * Mostra o modal de pausa.
+     * Esta função é pública para que a TutorialScene possa chamá-la.
+     */
+    public showPauseModal(): void {
+        this.pauseModal.setVisible(true);
+        this.pauseButton.setVisible(false);
+    }
+    // --- FIM DA ADIÇÃO ---
 
-        // Limpa corações antigos
+
+    private drawHearts(initialHealth: number): void {
         this.hearts.forEach(heart => heart.destroy());
         this.hearts = [];
 
         for (let i = 0; i < this.maxHealth; i++) {
-            const x = 40 + (i * 35);
-            const y = 40;
-            console.log(`Criando coração na posição (${x}, ${y})`);
-            const heart = this.add.image(x, y, 'heart')
+            const heart = this.add.image(40 + (i * 35), 40, 'heart')
                 .setScale(0.1); 
             this.hearts.push(heart);
         }
@@ -104,11 +114,8 @@ export class UIScene extends Scene {
     }
 
     private updateHearts(currentHealth: number): void {
-        console.log('Atualizando corações. Saúde atual:', currentHealth);
         for (let i = 0; i < this.hearts.length; i++) {
-            const visible = i < currentHealth;
-            console.log(`Coração ${i} visível: ${visible}`);
-            this.hearts[i].setVisible(visible);
+            this.hearts[i].setVisible(i < currentHealth);
         }
     }
 }

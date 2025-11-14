@@ -9,39 +9,43 @@ export class LevelSelectScene extends Scene {
     }
 
     create() {
-        // Pega o progresso do jogador
         this.highestLevelUnlocked = GameProgress.getHighestLevelUnlocked();
 
         this.add.image(this.cameras.main.width / 2, 100, 'title_level_select')
             .setOrigin(0.5)
             .setScale(1.0);
 
-        // Define as cenas e as imagens dos botões
+        // Mapeamento de dados das Cenas Educativas
+        const educationDataMap: { [key: string]: { images: string[], nextScene: string } } = {
+            'LevelOneScene': { images: ['edu_1', 'edu_2', 'edu_3'], nextScene: 'LevelOneScene' },
+            'LevelTwoScene': { images: ['edu_4'], nextScene: 'LevelTwoScene' },
+            'LevelThreeScene': { images: ['edu_5'], nextScene: 'LevelThreeScene' },
+            'LevelFourScene': { images: ['edu_6'], nextScene: 'LevelFourScene' } // (Adicionar 'edu_7' aqui)
+        };
+
         const levelData = [
             { scene: 'LevelOneScene', image: 'level_1_button' },
             { scene: 'LevelTwoScene', image: 'level_2_button' },
             { scene: 'LevelThreeScene', image: 'level_3_button' },
-            // { scene: 'LevelFourScene', image: 'level_4_button' }, 
+            { scene: 'LevelFourScene', image: 'level_lock_button' }, 
         ];
 
-        // Posições dos botões na tela
         const positions = [
             { x: 200, y: 300 },
             { x: 400, y: 300 },
             { x: 600, y: 300 },
-            { x: 800, y: 300 }, // Posição para o nível 4
+            { x: 800, y: 300 },
         ];
         
-        // --- LÓGICA DE BOTÕES ATUALIZADA ---
-
-        for (let i = 1; i <= 4; i++) {
-            const pos = positions[i-1];
-            const isUnlocked = i <= this.highestLevelUnlocked;
-            const levelInfo = levelData[i-1]; 
+        for (let i = 0; i < levelData.length; i++) {
+            const pos = positions[i];
+            const levelInfo = levelData[i];
+            const isUnlocked = (i + 1) <= this.highestLevelUnlocked;
 
             let button: Phaser.GameObjects.Image;
+            let targetSceneKey = levelInfo.scene; // ex: 'LevelOneScene'
 
-            if (isUnlocked && levelInfo) {
+            if (isUnlocked) {
                 button = this.add.image(pos.x, pos.y, levelInfo.image)
                     .setInteractive({ useHandCursor: true })
                     .setScale(0.3); 
@@ -49,9 +53,28 @@ export class LevelSelectScene extends Scene {
                 button.on('pointerover', () => button.setTint(0xDDDDDD));
                 button.on('pointerout', () => button.clearTint());
                 button.on('pointerdown', () => button.setTint(0xAAAAAA));
+                
                 button.on('pointerup', () => {
                     button.clearTint();
-                    this.scene.start(levelInfo.scene);
+                    
+                    const eduData = educationDataMap[targetSceneKey];
+                    const hasSeenTutorial = GameProgress.getTutorialSeen();
+
+                    // --- LÓGICA DE FLUXO ATUALIZADA ---
+
+                    if (targetSceneKey === 'LevelOneScene' && !hasSeenTutorial) {
+                        // FLUXO: TUTORIAL -> EDU -> JOGO
+                        this.scene.start('TutorialScene', { 
+                            origin: 'LevelSelect',
+                            nextScene: 'EducationScene', // Próxima cena é a Educação
+                            nextSceneData: eduData       // Passa os dados da Educação para o Tutorial
+                        });
+                        
+                    } else {
+                        // FLUXO: EDU -> JOGO (padrão)
+                        this.scene.start('EducationScene', eduData);
+                    }
+                    // --- FIM DA LÓGICA ---
                 });
 
             } else {
