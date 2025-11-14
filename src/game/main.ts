@@ -9,6 +9,7 @@ import { UIScene } from './scenes/UIScene';
 import { VictoryScene } from './scenes/VictoryScene';
 import { TutorialScene } from './scenes/TutorialScene';
 import { EducationScene } from './scenes/EducationScene';
+import { LevelTwoScene } from './scenes/LevelTwoScene';
 
 const config: Phaser.Types.Core.GameConfig = {
     type: AUTO,
@@ -38,6 +39,7 @@ const config: Phaser.Types.Core.GameConfig = {
         VictoryScene,
         TutorialScene,
         EducationScene,
+        LevelTwoScene,
     ]
 };
 

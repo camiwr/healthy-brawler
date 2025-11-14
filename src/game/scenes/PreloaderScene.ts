@@ -31,10 +31,12 @@ export class Preloader extends Scene {
 
         this.load.image('tileset_terrain', 'images/tileset.png');
         this.load.image('tileset_objects', 'images/objects.png');
+        this.load.image('tileset_grass_l2', 'images/TX Tileset Grass.png');
+        this.load.image('tileset_objects_l2', 'images/objects-new.png');
 
 
         this.load.tilemapTiledJSON('map_level1', 'maps/level1/level1.json');
-        // this.load.tilemapTiledJSON('map_level2', 'maps/level2/level2.json');
+        this.load.tilemapTiledJSON('map_level2', 'maps/level2/level2.json');
         // this.load.tilemapTiledJSON('map_level3', 'maps/level3/level3.json');
         this.load.spritesheet('player', 'images/Player.png', {
             frameWidth: 32,
@@ -87,12 +89,8 @@ export class Preloader extends Scene {
         this.load.spritesheet('collect_apple', './animated/Apples.png', fruitFrameSize);
         this.load.spritesheet('collect_banana', './animated/Bananas.png', fruitFrameSize);
         this.load.spritesheet('collect_cherry', './animated/Cherries.png', fruitFrameSize);
-        this.load.spritesheet('collect_kiwi', './animated/Kiwi.png', fruitFrameSize);
-        this.load.spritesheet('collect_melon', './animated/Melon.png', fruitFrameSize);
         this.load.spritesheet('collect_orange', './animated/Orange.png', fruitFrameSize);
         this.load.spritesheet('collect_pineapple', './animated/Pineapple.png', fruitFrameSize);
-
-        this.load.spritesheet('collect_effect', './animated/Collected.png', { frameWidth: 32, frameHeight: 32 });
 
         // Imagens para a cena educacional
         this.load.image('edu_1', 'images/edu_1.png');
@@ -157,25 +155,25 @@ export class Preloader extends Scene {
         });
 
         // --- ANIMAÇÕES DE INIMIGOS ---
-        this.anims.create({ 
-            key: 'slime-idle', 
-            frames: this.anims.generateFrameNumbers('slime-idle-sheet', { start: 0, end: 3 }), 
-            frameRate: 6, 
-            repeat: -1 
+        this.anims.create({
+            key: 'slime-idle',
+            frames: this.anims.generateFrameNumbers('slime-idle-sheet', { start: 0, end: 3 }),
+            frameRate: 6,
+            repeat: -1
         });
-        
-        this.anims.create({ 
-            key: 'slime-move', 
-            frames: this.anims.generateFrameNumbers('slime-run-sheet', { start: 0, end: 6 }), 
-            frameRate: 8, 
-            repeat: -1 
+
+        this.anims.create({
+            key: 'slime-move',
+            frames: this.anims.generateFrameNumbers('slime-run-sheet', { start: 0, end: 6 }),
+            frameRate: 8,
+            repeat: -1
         });
-        
+
         this.anims.create({
             key: 'slime-die',
-            frames: this.anims.generateFrameNumbers('slime-die-sheet', { start: 0, end: 6 }), 
+            frames: this.anims.generateFrameNumbers('slime-die-sheet', { start: 0, end: 6 }),
             frameRate: 8,
-            repeat: 0 
+            repeat: 0
         });
 
         // --- ANIMAÇÕES DE PROJÉTEIS ---
@@ -198,13 +196,9 @@ export class Preloader extends Scene {
         this.anims.create({ key: 'apple-spin', frames: this.anims.generateFrameNumbers('collect_apple', fruitFrames), frameRate: fruitFrameRate, repeat: -1 });
         this.anims.create({ key: 'banana-spin', frames: this.anims.generateFrameNumbers('collect_banana', fruitFrames), frameRate: fruitFrameRate, repeat: -1 });
         this.anims.create({ key: 'cherry-spin', frames: this.anims.generateFrameNumbers('collect_cherry', fruitFrames), frameRate: fruitFrameRate, repeat: -1 });
-        this.anims.create({ key: 'kiwi-spin', frames: this.anims.generateFrameNumbers('collect_kiwi', fruitFrames), frameRate: fruitFrameRate, repeat: -1 });
-        this.anims.create({ key: 'melon-spin', frames: this.anims.generateFrameNumbers('collect_melon', fruitFrames), frameRate: fruitFrameRate, repeat: -1 });
         this.anims.create({ key: 'orange-spin', frames: this.anims.generateFrameNumbers('collect_orange', fruitFrames), frameRate: fruitFrameRate, repeat: -1 });
         this.anims.create({ key: 'pineapple-spin', frames: this.anims.generateFrameNumbers('collect_pineapple', fruitFrames), frameRate: fruitFrameRate, repeat: -1 });
 
-        // Animação de coleta
-        this.anims.create({ key: 'item-collected', frames: this.anims.generateFrameNumbers('collect_effect', { start: 0, end: 5 }), frameRate: 15, repeat: 0 });
         console.log('Animações criadas corretamente!');
         this.scene.start('SplashScreen');
     }
