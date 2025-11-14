@@ -59,11 +59,13 @@ export class Preloader extends Scene {
         this.load.image('game_over', './UI/gameover.png');
         this.load.image('tryagain', './UI/tryagain.png');
         this.load.image('resume_button', './UI/continuar.png');
+        this.load.image('skip_button', './UI/pular.png');
         this.load.image('pause_modal_bg', './UI/box.png')
 
         this.load.image('victory_graphic', 'UI/win-scene.png');
         this.load.image('next_button', 'UI/proximo.png');
         this.load.image('back_button', 'UI/voltar.png');
+        this.load.image('tutorial_button', 'UI/tutorial.png')
 
         this.load.image('level_1_button', './UI/one.png');
         this.load.image('level_2_button', './UI/two.png');
@@ -91,6 +93,15 @@ export class Preloader extends Scene {
         this.load.spritesheet('collect_pineapple', './animated/Pineapple.png', fruitFrameSize);
 
         this.load.spritesheet('collect_effect', './animated/Collected.png', { frameWidth: 32, frameHeight: 32 });
+
+        // Imagens para a cena educacional
+        this.load.image('edu_1', 'images/edu_1.png');
+        this.load.image('edu_2', 'images/edu_2.png');
+        this.load.image('edu_3', 'images/edu_3.png');
+        this.load.image('edu_4', 'images/edu_4.png');
+        this.load.image('edu_5', 'images/edu_5.png');
+        this.load.image('edu_6', 'images/edu_6.png');
+        this.load.image('edu_7', 'images/edu_7.png');
     }
 
     create() {
