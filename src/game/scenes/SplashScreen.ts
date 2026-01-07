@@ -6,44 +6,90 @@ export class SplashScreen extends Scene {
     }
 
     create() {
-        // 1. Fundo Degradê
+        // Fundo Degradê
         this.createGradientBackground();
 
-        // 1. Frutinhas Flutuando
-        const fruitKeys = ['apple', 'banana', 'strawberry', 'grape', 'watermelon', 'pineapple', 'lime'];
-        for (let i = 0; i < 25; i++) {
-            const x = Phaser.Math.Between(0, this.cameras.main.width);
-            const y = Phaser.Math.Between(0, this.cameras.main.height);
-            const key = Phaser.Utils.Array.GetRandom(fruitKeys);
+        const fruitPositions = [
+        { x: 120, y: 150, key: 'collect_apple', anim: 'apple-spin' },
+        { x: 680, y: 120, key: 'collect_banana', anim: 'banana-spin' },
+        { x: 150, y: 450, key: 'collect_orange', anim: 'orange-spin' },
+        { x: 650, y: 400, key: 'collect_strawberry', anim: 'strawberry-spin' },
+        { x: 400, y: 100, key: 'collect_pineapple', anim: 'pineapple-spin' },
+        { x: 300, y: 500, key: 'collect_kiwi', anim: 'kiwi-spin' },
+        { x: 500, y: 300, key: 'collect_watermelon', anim: 'watermelon-spin' },
+        { x: 400, y: 350, key: 'collect_cherry', anim: 'cherry-spin' },
+
+        { x: 50,  y: 300, key: 'collect_kiwi', anim: 'kiwi-spin' },
+        { x: 750, y: 250, key: 'collect_apple', anim: 'apple-spin' },
+        { x: 250, y: 80,  key: 'collect_cherry', anim: 'cherry-spin' },
+        { x: 550, y: 50,  key: 'collect_orange', anim: 'orange-spin' },
+        { x: 100, y: 550, key: 'collect_banana', anim: 'banana-spin' },
+        { x: 700, y: 530, key: 'collect_pineapple', anim: 'pineapple-spin' },
+        { x: 450, y: 550, key: 'collect_watermelon', anim: 'watermelon-spin' },
+        { x: 30,  y: 80,  key: 'collect_strawberry', anim: 'strawberry-spin' },
+        { x: 770, y: 60,  key: 'collect_cherry', anim: 'cherry-spin' },
+
+        { x: 850, y: 150, key: 'collect_orange', anim: 'orange-spin' },
+        { x: 920, y: 350, key: 'collect_banana', anim: 'banana-spin' },
+        { x: 800, y: 500, key: 'collect_kiwi', anim: 'kiwi-spin' },
+        { x: 980, y: 100, key: 'collect_strawberry', anim: 'strawberry-spin' },
+        { x: 880, y: 580, key: 'collect_watermelon', anim: 'watermelon-spin' },
+        { x: 1000, y: 300, key: 'collect_pineapple', anim: 'pineapple-spin' },
+        { x: 950, y: 500, key: 'collect_cherry', anim: 'cherry-spin' },
+        { x: 200, y: 300, key: 'collect_watermelon', anim: 'watermelon-spin' },
+    ];
+
+    fruitPositions.forEach((config, index) => {
+        const fruit = this.add.sprite(config.x, config.y, config.key);
+        fruit.setScale(3);
+        fruit.setAlpha(0.7);
+
+        fruit.play(config.anim);
+        this.tweens.add({
+            targets: fruit,
+            y: config.y - 15,          // Sobe 15 pixels
+            duration: 1500 + (index * 150), // Tempos variados para não subirem todas juntas
+            ease: 'Sine.easeInOut',    // Movimento suave
+            yoyo: true,                // Vai e volta
+            repeat: -1                 // Loop infinito
+        });
+    });
+
+        // // 1. Frutinhas Flutuando
+        // const fruitKeys = ['apple', 'banana', 'strawberry', 'grape', 'watermelon', 'pineapple', 'lime'];
+        // for (let i = 0; i < 25; i++) {
+        //     const x = Phaser.Math.Between(0, this.cameras.main.width);
+        //     const y = Phaser.Math.Between(0, this.cameras.main.height);
+        //     const key = Phaser.Utils.Array.GetRandom(fruitKeys);
             
-            const fruit = this.physics.add.image(x, y, key);
-            const velocityX = Phaser.Math.Between(-30, 30);
-            const velocityY = Phaser.Math.Between(-30, 30);
+        //     const fruit = this.physics.add.image(x, y, key);
+        //     const velocityX = Phaser.Math.Between(-30, 30);
+        //     const velocityY = Phaser.Math.Between(-30, 30);
 
-            fruit.setVelocity(velocityX, velocityY);
-            // Faz a fruta girar no próprio eixo (velocidade angular aleatória)
-            const angularSpeed = Phaser.Math.Between(-120, 120); // negativo gira em sentido contrário
-            fruit.setAngularVelocity(angularSpeed);
+        //     fruit.setVelocity(velocityX, velocityY);
+        //     // Faz a fruta girar no próprio eixo (velocidade angular aleatória)
+        //     const angularSpeed = Phaser.Math.Between(-120, 120); // negativo gira em sentido contrário
+        //     fruit.setAngularVelocity(angularSpeed);
 
-            fruit.setCollideWorldBounds(true, 1, 1, true);
-            fruit.setDepth(0);
+        //     fruit.setCollideWorldBounds(true, 1, 1, true);
+        //     fruit.setDepth(0);
 
-            const randomSize = Phaser.Math.Between(65, 65);
-            fruit.setDisplaySize(randomSize, randomSize);
+        //     const randomSize = Phaser.Math.Between(65, 65);
+        //     fruit.setDisplaySize(randomSize, randomSize);
 
-            // Deixa as frutas com 50% de opacidade
-            fruit.setAlpha(0.5);
-        }
+        //     // Deixa as frutas com 50% de opacidade
+        //     fruit.setAlpha(0.5);
+        // }
 
-        // 2. Logo do Jogo
+        // Logo do Jogo
         const logo = this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2 - 50, 'logo_brawler');
-        logo.setDepth(10); // Logo na frente
+        logo.setDepth(10);
 
-        // 3. Botão "Começar" (AGORA COM IMAGEM PIXEL ART)
+        // Botão "Começar"
         const startButton = this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2 + 150, 'play_button')
             .setOrigin(0.5)
             .setInteractive({ useHandCursor: true })
-            .setScale(0.5); // aumenta o tamanho do botão (ajuste o valor conforme necessário)
+            .setScale(0.5); // aumenta o tamanho do botão
             
         startButton.setDepth(10); 
         startButton.on('pointerover', () => {

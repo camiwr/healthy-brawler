@@ -92,12 +92,15 @@ export class Preloader extends Scene {
 
 
         // Frutas de coleta animadas
-        const fruitFrameSize = { frameWidth: 32, frameHeight: 32 }; // Ajuste o tamanho se for diferente
+        const fruitFrameSize = { frameWidth: 32, frameHeight: 32 }; 
         this.load.spritesheet('collect_apple', './animated/Apples.png', fruitFrameSize);
         this.load.spritesheet('collect_banana', './animated/Bananas.png', fruitFrameSize);
         this.load.spritesheet('collect_cherry', './animated/Cherries.png', fruitFrameSize);
         this.load.spritesheet('collect_orange', './animated/Orange.png', fruitFrameSize);
         this.load.spritesheet('collect_pineapple', './animated/Pineapple.png', fruitFrameSize);
+        this.load.spritesheet('collect_kiwi', './animated/Kiwi.png', fruitFrameSize);
+        this.load.spritesheet('collect_watermelon', './animated/Melon.png', fruitFrameSize);
+        this.load.spritesheet('collect_strawberry', './animated/Strawberry.png', fruitFrameSize);
 
         // --- LIXO (NÃO SAUDÁVEIS) - IMAGENS ESTÁTICAS ---
         this.load.image('lixo_pizza', './lixo/pizza.png');
@@ -206,14 +209,17 @@ export class Preloader extends Scene {
             repeat: -1
         });
 
-        // --- NOVAS ANIMAÇÕES DE FRUTAS E EFEITOS ---
+        // --- ANIMAÇÕES DE FRUTAS E EFEITOS ---
         const fruitFrameRate = 10;
-        const fruitFrames = { start: 0, end: 16 }; // A maioria das suas frutas tem 17 frames
+        const fruitFrames = { start: 0, end: 16 };
         this.anims.create({ key: 'apple-spin', frames: this.anims.generateFrameNumbers('collect_apple', fruitFrames), frameRate: fruitFrameRate, repeat: -1 });
         this.anims.create({ key: 'banana-spin', frames: this.anims.generateFrameNumbers('collect_banana', fruitFrames), frameRate: fruitFrameRate, repeat: -1 });
         this.anims.create({ key: 'cherry-spin', frames: this.anims.generateFrameNumbers('collect_cherry', fruitFrames), frameRate: fruitFrameRate, repeat: -1 });
         this.anims.create({ key: 'orange-spin', frames: this.anims.generateFrameNumbers('collect_orange', fruitFrames), frameRate: fruitFrameRate, repeat: -1 });
         this.anims.create({ key: 'pineapple-spin', frames: this.anims.generateFrameNumbers('collect_pineapple', fruitFrames), frameRate: fruitFrameRate, repeat: -1 });
+        this.anims.create({ key: 'kiwi-spin', frames: this.anims.generateFrameNumbers('collect_kiwi', fruitFrames), frameRate: fruitFrameRate, repeat: -1 });
+        this.anims.create({ key: 'watermelon-spin', frames: this.anims.generateFrameNumbers('collect_watermelon', fruitFrames), frameRate: fruitFrameRate, repeat: -1 });
+        this.anims.create({ key: 'strawberry-spin', frames: this.anims.generateFrameNumbers('collect_strawberry', fruitFrames), frameRate: fruitFrameRate, repeat: -1 });
 
         console.log('Animações criadas corretamente!');
         this.scene.start('SplashScreen');
